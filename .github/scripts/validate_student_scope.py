@@ -22,7 +22,7 @@ def invalid_paths(author: str, owner: str, paths: list[str]) -> list[str]:
     if author.casefold() == owner.casefold():
         return []
 
-    allowed_parts = ("estudiants", author.casefold())
+    allowed_parts = ("estudiantes", author.casefold())
     invalid: list[str] = []
     for raw_path in paths:
         parts = PurePosixPath(raw_path.replace("\\", "/")).parts
@@ -54,7 +54,7 @@ def main() -> int:
     if invalid:
         print(
             f"Error: @{args.author} solo puede modificar "
-            f"estudiants/{args.author}/",
+            f"estudiantes/{args.author}/",
             file=sys.stderr,
         )
         for path in invalid:
