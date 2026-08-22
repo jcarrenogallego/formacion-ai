@@ -353,4 +353,158 @@ flowchart TB
 
 En una generación real, el modelo añade el token elegido al contexto y vuelve a ejecutar el proceso para obtener el siguiente. La respuesta se construye de esta manera, token a token, hasta que se alcanza una condición de finalización.
 
-En el siguiente apartado profundizaremos en **self-attention**, la pieza que permite calcular qué partes del contexto deben influir más en la representación de cada token.
+## 1.1 - Self-attention: relacionar los tokens
+
+Un **token** es una unidad en la que el sistema divide el texto. Puede ser una palabra completa, una parte de una palabra o un signo. El modelo no analiza cada token de forma aislada: necesita relacionarlo con los demás para interpretar el contexto.
+
+**Self-attention** es el mecanismo que permite que cada token tenga en cuenta otros tokens de la misma secuencia y determine cuáles son más relevantes para representarlo.
+
+Por ejemplo:
+
+> La función lee el archivo y después lo valida.
+
+Para interpretar `lo`, el modelo necesita relacionarlo principalmente con `archivo`. También puede reconocer que `lee` y `valida` son acciones realizadas por `función`. Estas relaciones no se programan una por una; el modelo aprende patrones durante su entrenamiento.
+
+```mermaid
+flowchart LR
+    A[La función] -->|realiza la acción| B[lee]
+    B --> C[el archivo]
+    C -->|referencia principal| D[lo]
+    D --> E[valida]
+    A -. contexto .-> E
+```
+
+La importancia de cada relación se representa mediante valores numéricos. Cuanto más relevante resulte un token para interpretar otro, mayor influencia tendrá en su representación contextual.
+
+Este análisis ocurre dentro de las capas del Transformer. No es un paso manual ni un modelo independiente situado antes del modelo de lenguaje.
+
+Gracias a este mecanismo, el modelo puede relacionar elementos alejados dentro de una instrucción, una conversación o un archivo de código. Aun así, está limitado por la información incluida en su contexto y por los patrones aprendidos durante el entrenamiento.
+
+## 1.2 - Predicción del siguiente token
+
+Después de relacionar los tokens mediante self-attention, el modelo utiliza el contexto resultante para calcular qué token podría aparecer a continuación. No produce toda la respuesta de una sola vez: asigna probabilidades a diferentes candidatos, selecciona uno y repite el proceso.
+
+```text
+El lenguaje utilizado en este proyecto es...
+
+Python      65 %
+Java        20 %
+TypeScript  10 %
+Otros        5 %
+```
+
+Estos porcentajes son un ejemplo simplificado. La selección depende del contexto y de la configuración utilizada durante la generación. El token elegido se añade a la secuencia y pasa a formar parte del contexto para calcular el siguiente.
+
+```mermaid
+flowchart LR
+    A[Contexto actual] --> B[Probabilidades]
+    B --> C[Selección de un token]
+    C --> D[Contexto actualizado]
+    D -->|repetir| B
+```
+
+Por eso un modelo puede generar respuestas diferentes ante una misma instrucción. También explica por qué una respuesta fluida o un token muy probable no garantizan que la información sea correcta.
+
+## 1.3 - Parámetros de inferencia
+
+Los parámetros de inferencia permiten controlar cómo se selecciona el siguiente token. No cambian lo que el modelo aprendió durante su entrenamiento; modifican el grado de variedad permitido al generar una respuesta.
+
+### `temperature`: controlar la variación
+
+- Una temperatura **baja** favorece los tokens más probables y produce respuestas más estables.
+- Una temperatura **alta** reparte más las posibilidades y genera respuestas más variadas, pero también puede aumentar los errores.
+
+Para tareas como completar o modificar código suele ser conveniente una variación baja. Para proponer ideas pueden explorarse valores más altos.
+
+### `top-k`: limitar la cantidad de candidatos
+
+Conserva únicamente los `k` tokens con mayor probabilidad. Por ejemplo, `top-k = 5` permite elegir entre los cinco candidatos principales y descarta el resto.
+
+### `top-p`: limitar por probabilidad acumulada
+
+Conserva el grupo más pequeño de candidatos cuya probabilidad conjunta alcanza el valor indicado. Por ejemplo, `top-p = 0.9` permite considerar candidatos hasta reunir aproximadamente el 90 % de la probabilidad.
+
+```mermaid
+flowchart TB
+    A[El modelo calcula candidatos<br/>para el siguiente token]
+    A --> B[Temperature<br/>ajusta cuánto se favorecen<br/>los candidatos más probables]
+    B --> C[Top-k<br/>conserva una cantidad máxima<br/>de candidatos]
+    C --> D[Top-p<br/>conserva candidatos hasta alcanzar<br/>una probabilidad acumulada]
+    D --> E[Se selecciona un token]
+    E --> F[El token se añade al contexto]
+    F -->|generar el siguiente| A
+```
+
+Este recorrido es una representación conceptual. Los parámetros pueden utilizarse por separado o combinarse, y su disponibilidad depende del modelo y de la herramienta utilizada.
+
+En resumen: `temperature` controla la variación, `top-k` limita cuántos candidatos participan y `top-p` limita cuánta probabilidad conjunta se considera.
+
+En herramientas como Codex o GitHub Copilot estos parámetros suelen gestionarse internamente y no se muestran al usuario. Cuando utilizamos una API compatible o un modelo local con Ollama, normalmente tenemos más control sobre su configuración.
+
+## 1.4 - Ventana de contexto
+
+La **ventana de contexto** es la cantidad máxima de información que el modelo puede considerar al generar una respuesta. Se mide en tokens e incluye tanto la entrada como la salida generada.
+
+En una herramienta agéntica, el contexto puede contener:
+
+- La instrucción del usuario y el historial reciente.
+- Las reglas configuradas para el agente.
+- Archivos o fragmentos de código relevantes.
+- Resultados de comandos y herramientas.
+
+```mermaid
+flowchart LR
+    A[Conversación] --> E[Ventana de contexto]
+    B[Instrucciones] --> E
+    C[Código relevante] --> E
+    D[Resultados de herramientas] --> E
+    E --> F[Modelo]
+    F --> G[Respuesta]
+```
+
+La ventana tiene un límite. Si la información disponible lo supera, la herramienta debe seleccionar, resumir o descartar parte del contenido. Por eso el modelo no está observando necesariamente todo el repositorio ni conserva una memoria permanente de conversaciones anteriores.
+
+### *Lost in the Middle*
+
+Tener una ventana grande no garantiza que toda la información influya de la misma manera. El fenómeno [*Lost in the Middle*](https://aclanthology.org/2024.tacl-1.9/) describe cómo algunos modelos aprovechan peor la información relevante cuando queda enterrada en medio de un contexto extenso.
+
+Para reducir este problema conviene:
+
+- Incluir únicamente el contexto necesario.
+- Escribir las instrucciones y restricciones de forma clara.
+- Dividir tareas muy grandes en pasos manejables.
+- Indicar expresamente qué archivos o datos son importantes.
+
+En las APIs, una entrada más extensa normalmente implica más tokens procesados, mayor coste y más tiempo de respuesta. Añadir contexto resulta útil cuando aporta información relevante; incluir contenido sin criterio puede dificultar el trabajo del modelo.
+
+## 1.5 - Consumo y coste de tokens
+
+Cuando utilizamos una API, el consumo suele dividirse en:
+
+- **Tokens de entrada:** instrucciones, historial, código y demás contexto enviado al modelo.
+- **Tokens de salida:** respuesta, código o decisiones generadas por el modelo.
+
+Cada proveedor establece sus tarifas y puede cobrar precios diferentes por la entrada y la salida. Para estimar el coste se aplica la tarifa correspondiente a cada grupo:
+
+```text
+Coste total =
+(tokens de entrada ÷ 1 000 000 × precio de entrada)
++
+(tokens de salida ÷ 1 000 000 × precio de salida)
+```
+
+### Ejemplo hipotético
+
+Supongamos una tarifa de `1 €` por millón de tokens de entrada y `4 €` por millón de tokens de salida:
+
+| Consumo | Cálculo | Coste |
+|---|---:|---:|
+| 10 000 tokens de entrada | `10 000 ÷ 1 000 000 × 1 €` | `0,010 €` |
+| 2 000 tokens de salida | `2 000 ÷ 1 000 000 × 4 €` | `0,008 €` |
+| **Total** | | **0,018 €** |
+
+Las cifras son únicamente didácticas y no representan la tarifa de un proveedor concreto.
+
+Una herramienta agéntica puede llamar al modelo varias veces para analizar archivos, decidir una acción, interpretar resultados y corregir errores. El consumo real de una tarea es la suma de todas esas llamadas, no solamente el texto visible al final.
+
+Para reducir consumo innecesario conviene proporcionar contexto relevante, evitar archivos que no aportan información y cerrar o resumir conversaciones que han crecido demasiado.
