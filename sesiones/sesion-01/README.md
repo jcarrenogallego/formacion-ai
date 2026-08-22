@@ -1,7 +1,5 @@
 # Sesión 1 - Fundamentos de los modelos de IA y entornos locales
 
-> Documento en construcción. El contenido de esta sesión se incorporará progresivamente.
-
 ## 0.0 - Algo de ML y modelos
 
 ### Propósito
@@ -287,3 +285,72 @@ flowchart LR
 ```
 
 En los siguientes apartados profundizaremos en cómo el texto se divide en tokens y cómo el modelo de lenguaje relaciona el contexto para generar una respuesta.
+
+## 1.0 - Introducción a la arquitectura Transformer
+
+### ¿Qué es un Transformer?
+
+Un **Transformer** es una arquitectura de red neuronal diseñada para trabajar con secuencias de información, como una frase, un fragmento de código o una conversación.
+
+Fue presentada en 2017 en el artículo [*Attention Is All You Need*](https://research.google/pubs/attention-is-all-you-need/). Su principal aportación fue utilizar la **atención** como mecanismo central para relacionar los elementos de una secuencia, sin depender de procesarlos estrictamente uno detrás de otro como hacían arquitecturas anteriores.
+
+En lenguaje sencillo, esta arquitectura permite que el modelo examine los tokens de un contexto y determine cuáles son relevantes para interpretar cada parte. Así puede relacionar, por ejemplo:
+
+- Una variable con el lugar donde fue declarada.
+- Una función con la instrucción que solicita modificarla.
+- Un pronombre con el concepto al que hace referencia.
+- Una pregunta con información aparecida antes en la conversación.
+
+El Transformer no contiene reglas escritas manualmente para reconocer esas relaciones. Durante el entrenamiento ajusta una gran cantidad de valores internos y aprende patrones a partir de los ejemplos que ha procesado.
+
+### ¿Por qué se llama Transformer?
+
+El nombre **Transformer** puede entenderse como una referencia a su función: recibe una secuencia representada numéricamente y la va **transformando** a través de varias capas. Cada capa produce una representación más enriquecida por el contexto hasta que el modelo puede generar una salida.
+
+No significa que el texto pase por varios modelos independientes. Las capas de atención y transformación forman parte de la arquitectura interna de un mismo modelo y, normalmente, son transparentes para quien utiliza ChatGPT, Claude Code o Codex.
+
+```text
+Tokens de entrada
+→ representaciones numéricas iniciales
+→ transformaciones sucesivas con contexto
+→ probabilidades para el siguiente token
+```
+
+### La arquitectura original y los modelos generativos
+
+El Transformer presentado originalmente estaba formado por dos grandes componentes:
+
+- **Encoder:** construía una representación contextual de la secuencia de entrada.
+- **Decoder:** utilizaba esa representación y los elementos ya generados para producir la secuencia de salida.
+
+Esta organización era especialmente útil para tareas como traducir un texto de un idioma a otro.
+
+Muchos modelos generativos actuales utilizan una variante denominada **decoder-only**. Conservan los bloques fundamentales del Transformer, pero están organizados para predecir repetidamente el siguiente token a partir de los tokens anteriores. Este es el esquema más relevante para entender, a alto nivel, cómo un modelo genera texto o código.
+
+### Vista simplificada de un modelo generativo
+
+El siguiente gráfico no representa todos los detalles matemáticos. Muestra el recorrido conceptual de la información y el bloque Transformer que se repite muchas veces dentro de un modelo real.
+
+```mermaid
+flowchart TB
+    A[Texto e instrucciones] --> B[Tokenización]
+    B --> C[Tokens]
+    C --> D[Representación numérica<br/>más información de posición]
+
+    subgraph T[Modelo Transformer]
+        direction TB
+        E[Self-attention<br/>relaciona los tokens] --> F[Normalización y conexión residual]
+        F --> G[Red de transformación<br/>procesa cada representación]
+        G --> H[Normalización y conexión residual]
+        H -. el bloque se repite .-> E
+    end
+
+    D --> E
+    H --> I[Distribución de probabilidades]
+    I --> J[Selección del siguiente token]
+    J --> K[Texto o código generado]
+```
+
+En una generación real, el modelo añade el token elegido al contexto y vuelve a ejecutar el proceso para obtener el siguiente. La respuesta se construye de esta manera, token a token, hasta que se alcanza una condición de finalización.
+
+En el siguiente apartado profundizaremos en **self-attention**, la pieza que permite calcular qué partes del contexto deben influir más en la representación de cada token.
