@@ -117,6 +117,13 @@ Gato:  22 %
 
 El modelo puede acertar, mostrar dudas o equivocarse. Su comportamiento estará condicionado por lo que aprendió durante el entrenamiento y por la información que reciba posteriormente.
 
+### Recursos opcionales para profundizar
+
+Esta introducción presenta solamente los conceptos necesarios para continuar con la formación. Quienes deseen estudiar *machine learning* con mayor profundidad pueden consultar los siguientes recursos externos:
+
+- [Complete A.I. & Machine Learning, Data Science Bootcamp](https://www.udemy.com/share/102vBw3@1K3A-YGLP90_wh3WHoD3JnxMsnl_eJ8mC_hVxrLqh0uNNCdmCHgnW4HvEdDmUprIzQ==/), de Andrei Neagoie y Daniel Bourke: formación extensa para profundizar en inteligencia artificial, *machine learning* y ciencia de datos. Es un curso de Udemy, por lo que requiere una cuenta y la adquisición del curso; no es un recurso gratuito.
+- [Curso: Introducción a Machine Learning, de Ligdi Gonzalez](https://www.youtube.com/playlist?list=PLJjOveEiVE4Cbbx1dVjydfmPPpjl0pg86): playlist completamente gratuita disponible en YouTube para continuar estudiando los conceptos introductorios.
+
 ## 0.1 - Demostración: entrenar un clasificador de imágenes
 
 Utilizaremos [Teachable Machine](https://teachablemachine.withgoogle.com/), una herramienta web gratuita que permite entrenar modelos sencillos sin escribir código.
@@ -132,26 +139,6 @@ La demostración nos permitirá observar de forma directa:
 - Cómo se utilizan ejemplos para entrenarlo.
 - Cómo responde ante una imagen que no utilizamos durante el entrenamiento.
 - Que el modelo puede acertar, mostrar distintos niveles de confianza o equivocarse.
-
-### Pasos de alto nivel
-
-1. Abrir [Teachable Machine](https://teachablemachine.withgoogle.com/).
-2. Crear un proyecto de imágenes.
-3. Definir dos categorías: `Perro` y `Gato`.
-4. Cargar las imágenes preparadas para cada categoría.
-5. Entrenar el modelo.
-6. Probarlo con imágenes diferentes a las utilizadas durante el entrenamiento.
-7. Observar la clasificación y los niveles de confianza.
-8. Comentar con el grupo los aciertos, las dudas y los errores observados.
-
-### Preguntas para conversar con el grupo
-
-- ¿Qué información utilizamos para construir el modelo?
-- ¿Qué diferencia existe entre entrenar el modelo y utilizarlo?
-- ¿El modelo reconoce correctamente todas las imágenes nuevas?
-- ¿Qué podría ocurrir si los ejemplos de entrenamiento son insuficientes o poco variados?
-- ¿Qué significa el porcentaje mostrado junto a cada categoría?
-- ¿Por qué una predicción no debe considerarse una verdad absoluta?
 
 ## 0.2 - Demostración: diferentes algoritmos, diferentes resultados
 
@@ -177,23 +164,6 @@ La herramienta permite comparar alternativas como K-Nearest Neighbors, Perceptro
 6. Comparar las diferentes fronteras de clasificación.
 7. Agregar algunos puntos más o cambiar su distribución.
 8. Observar cómo reaccionan los modelos ante los cambios.
-
-### Ideas que queremos observar
-
-- Diferentes algoritmos pueden encontrar soluciones diferentes para los mismos datos.
-- Algunos modelos se adaptan mejor que otros a determinadas distribuciones.
-- Un modelo más complejo no es necesariamente mejor para todos los problemas.
-- La precisión depende tanto del modelo como de los datos y de su configuración.
-- Existen muchos modelos porque no todos los problemas requieren la misma forma de aprender o clasificar.
-- Para elegir un modelo necesitamos probarlo y evaluar sus resultados en el contexto donde se utilizará.
-
-### Preguntas para conversar con el grupo
-
-- ¿Todos los algoritmos han separado los puntos de la misma manera?
-- ¿Cuál parece funcionar mejor con la distribución actual?
-- ¿El resultado cambia cuando agregamos nuevos puntos?
-- ¿El algoritmo que funcionó mejor en el primer ejemplo sigue siendo el mejor después de cambiar los datos?
-- ¿Por qué no existe un único modelo que sea siempre el mejor para cualquier problema?
 
 ## 0.3 - Conexión con el resto de la sesión
 
