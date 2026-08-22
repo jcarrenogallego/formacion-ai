@@ -34,7 +34,7 @@
 Todos los archivos modificados por un estudiante deben estar dentro de:
 
 ```text
-estudiants/<github-login>/
+estudiantes/<github-login>/
 ```
 
 El segmento `<github-login>` debe coincidir con el usuario de GitHub que abre el pull request, sin importar diferencias entre mayúsculas y minúsculas.
@@ -42,7 +42,7 @@ El segmento `<github-login>` debe coincidir con el usuario de GitHub que abre el
 Organización recomendada:
 
 ```text
-estudiants/<github-login>/
+estudiantes/<github-login>/
 ├── README.md
 ├── session-01/
 │   └── exercise-01/

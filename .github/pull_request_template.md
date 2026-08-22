@@ -2,7 +2,7 @@
 
 - Sesión:
 - Ejercicio:
-- Carpeta personal: `estudiants/<github-login>/`
+- Carpeta personal: `estudiantes/<github-login>/`
 
 ## Descripción
 
@@ -14,7 +14,7 @@
 
 ## Checklist
 
-- [ ] Todos mis cambios están dentro de `estudiants/<mi-github-login>/`.
+- [ ] Todos mis cambios están dentro de `estudiantes/<mi-github-login>/`.
 - [ ] Mi carpeta personal coincide con el usuario que abre este pull request.
 - [ ] No he incluido claves, tokens, contraseñas ni datos confidenciales.
 - [ ] He documentado cómo ejecutar o revisar la solución.
