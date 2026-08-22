@@ -786,18 +786,61 @@ Prueba cada respuesta en la consola del navegador. Para una entrada como `[1, 2,
 
 Una temperatura baja suele producir respuestas más estables. Una temperatura alta permite mayor variedad, pero puede aumentar las diferencias y los errores. Ningún valor garantiza que el código sea correcto: siempre debemos ejecutarlo y revisarlo.
 
-## 1.12 - Registrar y comparar los resultados
+> **¿Qué buscamos al variar la temperatura?**
+>
+> La temperatura no hace que el modelo sea más o menos inteligente ni modifica lo que aprendió. Una temperatura baja favorece la solución que el modelo considera más probable; una temperatura alta permite explorar alternativas menos habituales que podrían encajar mejor en algunos problemas.
+>
+> Para implementar o corregir código suele convenir una temperatura baja. Para proponer enfoques, nombres, diseños o alternativas puede resultar útil aumentar la variedad. Una respuesta diferente no es necesariamente peor, pero siempre debe evaluarse en función de los requisitos y comprobarse mediante pruebas.
 
-Completa una fila después de cada ejecución:
+## 1.12 - Ejemplo de resultados
 
-| `temperature` | Intento | ¿El código funciona? | ¿Cumple todos los requisitos? | Diferencias observadas |
-|---:|---:|---|---|---|
-| `0.0` | 1 | | | |
-| `0.0` | 2 | | | |
-| `0.0` | 3 | | | |
-| `1.5` | 1 | | | |
-| `1.5` | 2 | | | |
-| `1.5` | 3 | | | |
+Estas dos respuestas fueron generadas por el mismo modelo utilizando la misma instrucción.
+
+### Resultado con `temperature = 0.0`
+
+```javascript
+function obtenerParesSinRepetidos(array) {
+    // Filtra los números pares
+    const pares = array.filter(num => num % 2 === 0);
+
+    // Elimina los valores repetidos
+    const paresSinRepetidos = [...new Set(pares)];
+
+    return paresSinRepetidos;
+}
+
+// Ejemplo de uso
+const numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const pares = obtenerParesSinRepetidos(numeros);
+console.log(pares); // [2, 4, 6, 8, 10]
+```
+
+La solución separa el problema en dos pasos sencillos y conserva el orden original de los números.
+
+### Resultado con `temperature = 1.5`
+
+```javascript
+function obtenerParesSinRepetidos(numeros) {
+    const pares = new Set();
+
+    for (const numero of numeros) {
+        if (numero % 2 === 0) {
+            pares.add(numero);
+        }
+    }
+
+    return Array.from(pares).sort((a, b) => a - b);
+}
+
+// Ejemplo de uso
+const numeros = [1, 2, 3, 4, 5, 6, 6, 7, 8, 9, 10];
+const paresSinRepetidos = obtenerParesSinRepetidos(numeros);
+console.log(paresSinRepetidos); // [2, 4, 6, 8, 10]
+```
+
+Esta solución también funciona con el ejemplo utilizado, pero añade una ordenación que no fue solicitada. Con una entrada como `[6, 2, 4, 2]`, devolvería `[2, 4, 6]` en lugar de conservar el orden esperado: `[6, 2, 4]`.
+
+El ejemplo muestra por qué no basta con comprobar que el código se ejecuta. También debemos verificar que respeta todos los requisitos. La mayor temperatura permitió explorar otra implementación válida en parte, pero introdujo una decisión adicional que cambió el comportamiento solicitado.
 
 Al terminar, compara con el grupo:
 
