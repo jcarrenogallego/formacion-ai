@@ -678,3 +678,152 @@ Antes de ejecutarlo, revisa `disk_size_gb` para confirmar que tienes espacio suf
 La herramienta compara el hardware con su catálogo y estima qué modelos deberían funcionar bien. El resultado sirve como orientación: el rendimiento real también depende de la cuantización, el tamaño del contexto y las aplicaciones que estén utilizando memoria al mismo tiempo.
 
 Después elegiremos una de las recomendaciones disponible en Ollama, revisaremos su tamaño antes de descargarla y realizaremos una prueba real en el equipo.
+
+## 1.9 - Descargar y ejecutar el modelo
+
+Ejecuta el comando generado en el apartado anterior. Ollama descargará el modelo la primera vez y abrirá una conversación en la terminal.
+
+```bash
+ollama run qwen2.5-coder:1.5b
+```
+
+### Primera interacción
+
+Utilizaremos JavaScript puro para poder probar el resultado directamente en el navegador, sin instalar herramientas adicionales. Envía esta instrucción al modelo:
+
+```text
+Escribe una función en JavaScript llamada obtenerPares que reciba un array de números y devuelva únicamente los números pares. Incluye un ejemplo con console.log y no utilices librerías externas.
+```
+
+Para comprobar la respuesta:
+
+1. Abrir las herramientas de desarrollo del navegador con `F12`.
+2. Seleccionar la pestaña **Consola** o **Console**.
+3. Copiar y pegar el código generado.
+4. Pulsar `Enter` y comprobar el resultado.
+
+Para una entrada como `[1, 2, 3, 4, 5, 6]`, esperamos obtener:
+
+```javascript
+[2, 4, 6]
+```
+
+Además de ejecutar el código, revisa si el modelo cumplió el nombre solicitado, evitó dependencias y añadió un ejemplo válido. Una respuesta que parece correcta debe verificarse antes de utilizarla.
+
+Para cerrar la conversación con el modelo:
+
+```text
+/bye
+```
+
+Para consultar los modelos descargados:
+
+```bash
+ollama ls
+```
+
+## 1.10 - Comprobar el uso del hardware
+
+Con el modelo todavía activo, abre una segunda terminal y ejecuta:
+
+```bash
+ollama ps
+```
+
+La columna `PROCESSOR` indica dónde se ha cargado el modelo:
+
+- `100% GPU`: se ejecuta completamente en la GPU.
+- `100% CPU`: se ejecuta utilizando la memoria del sistema.
+- Un porcentaje combinado: utiliza CPU y GPU.
+
+El resultado puede ser diferente en cada equipo. Compararlo permite entender por qué un mismo modelo responde más rápido para unas personas que para otras.
+
+## 1.11 - Taller: comparar `temperature`
+
+Ejecutaremos la misma instrucción varias veces para observar cómo cambia la respuesta. Dentro de la conversación de Ollama, activa primero las estadísticas:
+
+```text
+/set verbose
+```
+
+### Prueba con baja variación
+
+Configura la temperatura:
+
+```text
+/set parameter temperature 0.0
+```
+
+Antes de cada ejecución, limpia el historial de la conversación:
+
+```text
+/clear
+```
+
+Después copia y ejecuta siempre la misma instrucción:
+
+```text
+Escribe una función en JavaScript llamada obtenerParesSinRepetidos que reciba un array de números, elimine los valores repetidos y devuelva únicamente los números pares conservando su orden original. Incluye un ejemplo con console.log y no utilices librerías externas.
+```
+
+Repite la prueba tres veces, utilizando `/clear` antes de cada intento.
+
+### Prueba con mayor variación
+
+Cambia la temperatura:
+
+```text
+/set parameter temperature 1.5
+```
+
+Ejecuta tres veces la misma instrucción anterior y utiliza `/clear` antes de cada intento.
+
+Prueba cada respuesta en la consola del navegador. Para una entrada como `[1, 2, 2, 3, 4, 4, 6]`, el resultado esperado es:
+
+```javascript
+[2, 4, 6]
+```
+
+Una temperatura baja suele producir respuestas más estables. Una temperatura alta permite mayor variedad, pero puede aumentar las diferencias y los errores. Ningún valor garantiza que el código sea correcto: siempre debemos ejecutarlo y revisarlo.
+
+## 1.12 - Registrar y comparar los resultados
+
+Completa una fila después de cada ejecución:
+
+| `temperature` | Intento | ¿El código funciona? | ¿Cumple todos los requisitos? | Diferencias observadas |
+|---:|---:|---|---|---|
+| `0.0` | 1 | | | |
+| `0.0` | 2 | | | |
+| `0.0` | 3 | | | |
+| `1.5` | 1 | | | |
+| `1.5` | 2 | | | |
+| `1.5` | 3 | | | |
+
+Al terminar, compara con el grupo:
+
+- Qué configuración produjo respuestas más parecidas.
+- Qué soluciones funcionaron realmente en el navegador.
+- Qué equipo obtuvo mayor velocidad de generación.
+- Si una respuesta más extensa también fue más útil.
+
+### Detener o eliminar el modelo
+
+Para liberar el modelo de la memoria:
+
+```bash
+ollama stop NOMBRE_DEL_MODELO
+```
+
+Para eliminarlo del disco cuando ya no sea necesario:
+
+```bash
+ollama rm NOMBRE_DEL_MODELO
+```
+
+Por ejemplo:
+
+```bash
+ollama stop qwen2.5-coder:1.5b
+```
+
+Eliminar un modelo es opcional. Si se elimina, Ollama tendrá que descargarlo de nuevo para volver a utilizarlo.
