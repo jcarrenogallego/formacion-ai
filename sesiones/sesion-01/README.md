@@ -508,3 +508,173 @@ Las cifras son únicamente didácticas y no representan la tarifa de un proveedo
 Una herramienta agéntica puede llamar al modelo varias veces para analizar archivos, decidir una acción, interpretar resultados y corregir errores. El consumo real de una tarea es la suma de todas esas llamadas, no solamente el texto visible al final.
 
 Para reducir consumo innecesario conviene proporcionar contexto relevante, evitar archivos que no aportan información y cerrar o resumir conversaciones que han crecido demasiado.
+
+## 1.6 - Modelos locales con Ollama
+
+Hasta ahora hemos hablado de modelos ejecutados por proveedores en la nube. También podemos descargar un modelo y ejecutarlo en nuestro propio equipo.
+
+**Ollama** es una herramienta que facilita la descarga, administración y ejecución de modelos. Podemos interactuar con ellos desde la terminal o mediante una API local.
+
+```mermaid
+flowchart LR
+    A[Usuario o aplicación] --> B[Ollama]
+    B --> C[Modelo descargado]
+    C --> D[CPU o GPU del equipo]
+    D --> E[Respuesta local]
+```
+
+| Modelo en la nube | Modelo local |
+|---|---|
+| Se ejecuta en la infraestructura del proveedor | Se ejecuta en nuestro equipo |
+| Requiere conexión al servicio | Puede funcionar sin conexión después de descargarlo |
+| El proveedor administra el hardware | El rendimiento depende de nuestro hardware |
+| Puede cobrarse por uso | No tiene coste por llamada, pero utiliza recursos locales |
+
+Ejecutar un modelo local ofrece más control y permite experimentar con parámetros como `temperature`. Sin embargo, los modelos ocupan espacio en disco y su velocidad depende de la memoria, la CPU, la GPU y el tamaño del modelo elegido.
+
+Antes de instalar Ollama comprobaremos el sistema operativo, el espacio disponible y las características del equipo. Después instalaremos la herramienta, descargaremos un modelo orientado a código y realizaremos nuestra primera prueba desde la terminal.
+
+## 1.7 - Instalación y verificación de Ollama
+
+Ollama está disponible para Windows, macOS y Linux. Antes de instalarlo, revisa los requisitos actuales y descarga la versión correspondiente desde la [documentación oficial](https://docs.ollama.com/quickstart).
+
+### Windows y macOS
+
+1. Descargar el instalador desde [ollama.com/download](https://ollama.com/download).
+2. Ejecutarlo y abrir la aplicación.
+3. Cerrar y volver a abrir la terminal para que reconozca el comando.
+
+### Linux
+
+Ejecutar el instalador oficial desde la terminal:
+
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
+### Comprobar la instalación
+
+Abrir una terminal nueva y ejecutar:
+
+```bash
+ollama --version
+```
+
+Si aparece la versión instalada, el comando está disponible correctamente. También podemos verificar que el servicio responde.
+
+En Windows PowerShell:
+
+```powershell
+Invoke-RestMethod http://localhost:11434/api/version
+```
+
+En macOS o Linux:
+
+```bash
+curl http://localhost:11434/api/version
+```
+
+### Problemas frecuentes
+
+- **No se reconoce `ollama`:** cerrar y abrir la terminal después de instalar.
+- **No responde el servicio:** abrir la aplicación en Windows o macOS; en Linux, comprobar que el servicio está iniciado.
+- **Falta espacio:** los modelos se descargan por separado y pueden ocupar varios gigabytes.
+
+Los modelos se guardan normalmente en la carpeta `.ollama` del usuario en Windows y macOS, y en el directorio administrado por el servicio de Ollama en Linux. La ubicación puede cambiarse mediante la configuración de la herramienta.
+
+## 1.8 - Elegir un modelo con `llmfit`
+
+No todos los equipos pueden ejecutar los mismos modelos con la misma velocidad. [`llmfit`](https://github.com/AlexsJones/llmfit) detecta la RAM, CPU y GPU del ordenador, y recomienda modelos según su tamaño y el rendimiento estimado.
+
+### Instalación
+
+En Windows con [Scoop](https://scoop.sh/):
+
+```powershell
+scoop install llmfit
+```
+
+En macOS o Linux con Homebrew:
+
+```bash
+brew install AlexsJones/llmfit/llmfit
+```
+
+### Analizar el equipo
+
+Para abrir la interfaz interactiva:
+
+```bash
+llmfit
+```
+
+### Opción recomendada para programación
+
+Para obtener directamente tres modelos compatibles con el equipo y orientados a programación, copia y ejecuta:
+
+```bash
+llmfit recommend -n 3 --use-case coding --min-fit good
+```
+
+La respuesta se muestra en formato JSON. Cada recomendación contiene muchos datos, pero para esta práctica nos interesan principalmente:
+
+- `name`: nombre completo del modelo.
+- `ollama_name`: nombre que debemos utilizar en Ollama.
+- `disk_size_gb`: espacio aproximado que ocupará la descarga.
+- `memory_required_gb`: memoria estimada para ejecutarlo.
+- `estimated_tps`: velocidad estimada en tokens por segundo.
+- `fit_label`: nivel de compatibilidad con el equipo.
+
+Ejemplo reducido de una recomendación:
+
+```json
+{
+  "name": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "ollama_name": "qwen2.5-coder:1.5b",
+  "disk_size_gb": 1.62,
+  "memory_required_gb": 2.34,
+  "estimated_tps": 42.8,
+  "fit_label": "Good"
+}
+```
+
+Si `ollama_name` aparece como `null`, esa recomendación no tiene un nombre asociado para descargarla directamente desde Ollama.
+
+### Obtener un comando de Ollama listo para copiar en PowerShell
+
+Este comando busca la primera recomendación que tiene `ollama_name` y construye el comando necesario para ejecutarla:
+
+```powershell
+$modelo = (llmfit recommend -n 10 --use-case coding --min-fit good | ConvertFrom-Json).models |
+    Where-Object { $_.ollama_name } |
+    Select-Object -First 1 -ExpandProperty ollama_name
+"ollama run $modelo"
+```
+
+La salida será similar a esta:
+
+```text
+ollama run qwen2.5-coder:1.5b
+```
+
+Que aparezca una sola recomendación es normal: no todos los modelos del catálogo de `llmfit` están disponibles directamente en Ollama.
+
+### Preparar el comando de Ollama
+
+Copia el valor de `ollama_name` y sustituye únicamente `NOMBRE_DEL_MODELO`:
+
+```bash
+ollama run NOMBRE_DEL_MODELO
+```
+
+Con la recomendación del ejemplo, el comando queda así:
+
+```bash
+ollama run qwen2.5-coder:1.5b
+```
+
+Antes de ejecutarlo, revisa `disk_size_gb` para confirmar que tienes espacio suficiente.
+
+La herramienta compara el hardware con su catálogo y estima qué modelos deberían funcionar bien. El resultado sirve como orientación: el rendimiento real también depende de la cuantización, el tamaño del contexto y las aplicaciones que estén utilizando memoria al mismo tiempo.
+
+Después elegiremos una de las recomendaciones disponible en Ollama, revisaremos su tamaño antes de descargarla y realizaremos una prueba real en el equipo.
