@@ -8,7 +8,7 @@ Aquí se publicarán progresivamente la documentación, los conceptos y los ejer
 
 1. Cada estudiante hace un *fork* de este repositorio en su cuenta de GitHub.
 2. Trabaja en una rama dentro de su fork.
-3. Guarda todas sus entregas en `students/<github-login>/`, donde `<github-login>` coincide con el usuario que abre el pull request.
+3. Guarda todas sus entregas en `estudiants/<github-login>/`, donde `<github-login>` coincide con el usuario que abre el pull request.
 4. Abre un pull request hacia `jcarrenogallego/formacion-ai:main`.
 5. El repositorio valida automáticamente que el pull request no modifique archivos fuera de su carpeta personal.
 6. El instructor revisa el trabajo y decide si lo integra.
@@ -18,7 +18,7 @@ Los estudiantes no reciben acceso de escritura al repositorio central. Consulta 
 ## Organización prevista
 
 - `sessions/01-...` a `sessions/11-...`: materiales y ejercicios publicados por el instructor.
-- `students/<github-login>/`: soluciones de cada participante, organizadas internamente por sesión.
+- `estudiants/<github-login>/`: soluciones de cada participante, organizadas internamente por sesión.
 - `.github/`: automatización y reglas de colaboración.
 
 ## Derechos de autor
