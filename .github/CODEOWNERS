@@ -1,0 +1,5 @@
+# El instructor es responsable de todo el contenido del repositorio central.
+* @jcarrenogallego
+
+# Protege explícitamente la configuración de colaboración.
+/.github/ @jcarrenogallego

@@ -1,0 +1,32 @@
+name: Validate student scope
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-student-scope:
+    name: validate-student-scope
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pull request
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate changed paths
+        env:
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: >-
+          python .github/scripts/validate_student_scope.py
+          --author "$PR_AUTHOR"
+          --owner "jcarrenogallego"
+          --base "$BASE_SHA"
+          --head "$HEAD_SHA"
