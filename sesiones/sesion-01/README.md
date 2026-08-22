@@ -268,6 +268,7 @@ El modelo genera decisiones y respuestas a partir de los patrones aprendidos. La
 ```mermaid
 flowchart LR
     subgraph Imagen[Clasificador de imágenes]
+        direction TB
         A1[Archivo de imagen] --> A2[Preparar píxeles]
         A2 --> A3[Modelo clasificador]
         A3 --> A4[Puntuaciones numéricas]
@@ -275,11 +276,14 @@ flowchart LR
     end
 
     subgraph Codigo[Agente de programación]
+        direction TB
         B1[Instrucción y proyecto] --> B2[Preparar contexto y tokens]
         B2 --> B3[Modelo de lenguaje]
         B3 --> B4[Tokens o solicitud de acción]
         B4 --> B5[Texto, código o herramienta]
     end
+
+    Imagen ~~~ Codigo
 ```
 
 En los siguientes apartados profundizaremos en cómo el texto se divide en tokens y cómo el modelo de lenguaje relaciona el contexto para generar una respuesta.
