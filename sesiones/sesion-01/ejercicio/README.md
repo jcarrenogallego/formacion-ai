@@ -1,5 +1,5 @@
 # Ejercicio práctico - Inferencia con un modelo local
-# HOLA MUNDO
+
 ## Objetivo
 
 Ejecutar un modelo de código con Ollama, utilizar el mismo prompt con dos temperaturas, comprobar las soluciones en el navegador y explicar con tus propias palabras las diferencias observadas.
