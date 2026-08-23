@@ -1,6 +1,10 @@
 # Sesión 1 - Fundamentos de los modelos de IA y entornos locales
 
+> Duración total: **3 horas** — 170 minutos de contenido y práctica, más 10 minutos de descanso.
+
 ## 0.0 - Algo de ML y modelos
+
+> Tiempo estimado: **10 minutos**
 
 ### Propósito
 
@@ -124,6 +128,8 @@ Esta introducción presenta solamente los conceptos necesarios para continuar co
 
 ## 0.1 - Demostración: entrenar un clasificador de imágenes
 
+> Tiempo estimado: **8 minutos**
+
 Utilizaremos [Teachable Machine](https://teachablemachine.withgoogle.com/), una herramienta web gratuita que permite entrenar modelos sencillos sin escribir código.
 
 ### Objetivo de la demostración
@@ -139,6 +145,8 @@ La demostración nos permitirá observar de forma directa:
 - Que el modelo puede acertar, mostrar distintos niveles de confianza o equivocarse.
 
 ## 0.2 - Demostración: diferentes algoritmos, diferentes resultados
+
+> Tiempo estimado: **7 minutos**
 
 Utilizaremos [Machine Learning Playground](https://ml-playground.com/#), una herramienta interactiva que permite observar cómo distintos algoritmos clasifican los mismos datos.
 
@@ -164,6 +172,8 @@ La herramienta permite comparar alternativas como K-Nearest Neighbors, Perceptro
 8. Observar cómo reaccionan los modelos ante los cambios.
 
 ## 0.3 - De los datos a las predicciones
+
+> Tiempo estimado: **8 minutos**
 
 Los modelos que hemos utilizado en las demostraciones y los modelos de lenguaje empleados por herramientas como Claude Code, Codex o ChatGPT comparten una idea general: reciben datos representados numéricamente, aplican patrones aprendidos durante el entrenamiento y producen una predicción.
 
@@ -288,6 +298,8 @@ En los siguientes apartados profundizaremos en cómo el texto se divide en token
 
 ## 1.0 - Introducción a la arquitectura Transformer
 
+> Tiempo estimado: **10 minutos**
+
 ### ¿Qué es un Transformer?
 
 Un **Transformer** es una arquitectura de red neuronal diseñada para trabajar con secuencias de información, como una frase, un fragmento de código o una conversación.
@@ -355,6 +367,8 @@ En una generación real, el modelo añade el token elegido al contexto y vuelve 
 
 ## 1.1 - Self-attention: relacionar los tokens
 
+> Tiempo estimado: **7 minutos**
+
 Un **token** es una unidad en la que el sistema divide el texto. Puede ser una palabra completa, una parte de una palabra o un signo. El modelo no analiza cada token de forma aislada: necesita relacionarlo con los demás para interpretar el contexto.
 
 **Self-attention** es el mecanismo que permite que cada token tenga en cuenta otros tokens de la misma secuencia y determine cuáles son más relevantes para representarlo.
@@ -382,6 +396,8 @@ Gracias a este mecanismo, el modelo puede relacionar elementos alejados dentro d
 
 ## 1.2 - Predicción del siguiente token
 
+> Tiempo estimado: **6 minutos**
+
 Después de relacionar los tokens mediante self-attention, el modelo utiliza el contexto resultante para calcular qué token podría aparecer a continuación. No produce toda la respuesta de una sola vez: asigna probabilidades a diferentes candidatos, selecciona uno y repite el proceso.
 
 ```text
@@ -406,6 +422,8 @@ flowchart LR
 Por eso un modelo puede generar respuestas diferentes ante una misma instrucción. También explica por qué una respuesta fluida o un token muy probable no garantizan que la información sea correcta.
 
 ## 1.3 - Parámetros de inferencia
+
+> Tiempo estimado: **9 minutos**
 
 Los parámetros de inferencia permiten controlar cómo se selecciona el siguiente token. No cambian lo que el modelo aprendió durante su entrenamiento; modifican el grado de variedad permitido al generar una respuesta.
 
@@ -443,6 +461,8 @@ En herramientas como Codex o GitHub Copilot estos parámetros suelen gestionarse
 
 ## 1.4 - Ventana de contexto
 
+> Tiempo estimado: **8 minutos**
+
 La **ventana de contexto** es la cantidad máxima de información que el modelo puede considerar al generar una respuesta. Se mide en tokens e incluye tanto la entrada como la salida generada.
 
 En una herramienta agéntica, el contexto puede contener:
@@ -479,6 +499,8 @@ En las APIs, una entrada más extensa normalmente implica más tokens procesados
 
 ## 1.5 - Consumo y coste de tokens
 
+> Tiempo estimado: **6 minutos**
+
 Cuando utilizamos una API, el consumo suele dividirse en:
 
 - **Tokens de entrada:** instrucciones, historial, código y demás contexto enviado al modelo.
@@ -509,7 +531,13 @@ Una herramienta agéntica puede llamar al modelo varias veces para analizar arch
 
 Para reducir consumo innecesario conviene proporcionar contexto relevante, evitar archivos que no aportan información y cerrar o resumir conversaciones que han crecido demasiado.
 
+## Descanso
+
+> Tiempo estimado: **10 minutos**
+
 ## 1.6 - Modelos locales con Ollama
+
+> Tiempo estimado: **4 minutos**
 
 Hasta ahora hemos hablado de modelos ejecutados por proveedores en la nube. También podemos descargar un modelo y ejecutarlo en nuestro propio equipo.
 
@@ -535,6 +563,8 @@ Ejecutar un modelo local ofrece más control y permite experimentar con parámet
 Antes de instalar Ollama comprobaremos el sistema operativo, el espacio disponible y las características del equipo. Después instalaremos la herramienta, descargaremos un modelo orientado a código y realizaremos nuestra primera prueba desde la terminal.
 
 ## 1.7 - Instalación y verificación de Ollama
+
+> Tiempo estimado: **12 minutos**
 
 Ollama está disponible para Windows, macOS y Linux. Antes de instalarlo, revisa los requisitos actuales y descarga la versión correspondiente desde la [documentación oficial](https://docs.ollama.com/quickstart).
 
@@ -583,6 +613,8 @@ curl http://localhost:11434/api/version
 Los modelos se guardan normalmente en la carpeta `.ollama` del usuario en Windows y macOS, y en el directorio administrado por el servicio de Ollama en Linux. La ubicación puede cambiarse mediante la configuración de la herramienta.
 
 ## 1.8 - Elegir un modelo con `llmfit`
+
+> Tiempo estimado: **10 minutos**
 
 No todos los equipos pueden ejecutar los mismos modelos con la misma velocidad. [`llmfit`](https://github.com/AlexsJones/llmfit) detecta la RAM, CPU y GPU del ordenador, y recomienda modelos según su tamaño y el rendimiento estimado.
 
@@ -681,6 +713,8 @@ Después elegiremos una de las recomendaciones disponible en Ollama, revisaremos
 
 ## 1.9 - Descargar y ejecutar el modelo
 
+> Tiempo estimado: **10 minutos**
+
 Ejecuta el comando generado en el apartado anterior. Ollama descargará el modelo la primera vez y abrirá una conversación en la terminal.
 
 ```bash
@@ -724,6 +758,8 @@ ollama ls
 
 ## 1.10 - Comprobar el uso del hardware
 
+> Tiempo estimado: **5 minutos**
+
 Con el modelo todavía activo, abre una segunda terminal y ejecuta:
 
 ```bash
@@ -739,6 +775,8 @@ La columna `PROCESSOR` indica dónde se ha cargado el modelo:
 El resultado puede ser diferente en cada equipo. Compararlo permite entender por qué un mismo modelo responde más rápido para unas personas que para otras.
 
 ## 1.11 - Taller: comparar `temperature`
+
+> Tiempo estimado: **15 minutos**
 
 Ejecutaremos la misma instrucción varias veces para observar cómo cambia la respuesta. Dentro de la conversación de Ollama, activa primero las estadísticas:
 
@@ -793,6 +831,8 @@ Una temperatura baja suele producir respuestas más estables. Una temperatura al
 > Para implementar o corregir código suele convenir una temperatura baja. Para proponer enfoques, nombres, diseños o alternativas puede resultar útil aumentar la variedad. Una respuesta diferente no es necesariamente peor, pero siempre debe evaluarse en función de los requisitos y comprobarse mediante pruebas.
 
 ## 1.12 - Ejemplo de resultados
+
+> Tiempo estimado: **5 minutos**
 
 Estas dos respuestas fueron generadas por el mismo modelo utilizando la misma instrucción.
 
@@ -872,5 +912,7 @@ ollama stop qwen2.5-coder:1.5b
 Eliminar un modelo es opcional. Si se elimina, Ollama tendrá que descargarlo de nuevo para volver a utilizarlo.
 
 ## Ejercicio propuesto
+
+> Tiempo estimado: **30 minutos** — 20 minutos para resolver y documentar, más 10 minutos para commit, push y PR.
 
 Completa el ejercicio [Experimentar con un modelo local](./ejercicio/README.md) y entrega los resultados desde tu fork mediante un pull request.
