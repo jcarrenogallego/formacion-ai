@@ -218,7 +218,7 @@ Los modelos de lenguaje siguen un esquema comparable. No reciben directamente la
 Instrucción del usuario
 → preparación del contexto
 → conversión del texto en tokens
-→ representación numérica
+→ representación numérica mediante embeddings
 → modelo de lenguaje
 → generación de nuevos tokens
 → conversión de los tokens a texto
@@ -347,7 +347,7 @@ El siguiente gráfico no representa todos los detalles matemáticos. Muestra el 
 flowchart TB
     A[Texto e instrucciones] --> B[Tokenización]
     B --> C[Tokens]
-    C --> D[Representación numérica<br/>más información de posición]
+    C --> D[Embeddings<br/>más información de posición]
 
     subgraph T[Modelo Transformer]
         direction TB
@@ -370,6 +370,73 @@ En una generación real, el modelo añade el token elegido al contexto y vuelve 
 > Tiempo estimado: **7 minutos**
 
 Un **token** es una unidad en la que el sistema divide el texto. Puede ser una palabra completa, una parte de una palabra o un signo. El modelo no analiza cada token de forma aislada: necesita relacionarlo con los demás para interpretar el contexto.
+
+### De tokens a embeddings
+
+El modelo no trabaja directamente con el texto visible. Primero, cada token se asocia con un identificador numérico. Después, una capa de embeddings transforma ese identificador en una representación numérica llamada **embedding**.
+
+Un embedding es un vector, es decir, una lista de números que permite al modelo representar características y relaciones aprendidas. El identificador de un token solamente indica cuál es; su embedding aporta una representación que el Transformer puede procesar.
+
+```text
+Texto
+→ tokens
+→ identificadores de los tokens
+→ embeddings o vectores
+→ capas del Transformer
+```
+
+```text
+Token:     "perro"
+ID:        4821
+Embedding: [0.18, -0.42, 0.07, ..., 0.31]
+```
+
+Los números son solamente ilustrativos. No necesitamos interpretar cada posición del vector por separado. La idea importante es que las capas del Transformer reciben estas representaciones vectoriales, junto con información sobre la posición de cada token, y las van enriqueciendo según el contexto.
+
+```mermaid
+flowchart LR
+    A[Texto] --> B[Tokens]
+    B --> C[Identificadores]
+    C --> D[Embeddings]
+    D --> E[Transformer]
+```
+
+### Embeddings dentro del modelo y embeddings para búsquedas
+
+Los embeddings no son exclusivos de RAG. Conviene distinguir dos usos relacionados:
+
+- **Embeddings internos del modelo:** representan los tokens que procesan las capas del Transformer.
+- **Modelos de embeddings:** generan un vector para una frase, una consulta o un fragmento de documento y permiten comparar contenidos por su significado.
+
+Por ejemplo, estas dos búsquedas utilizan palabras diferentes, pero expresan una intención relacionada:
+
+```text
+"corregir error de autenticación"
+"solucionar fallo al iniciar sesión"
+```
+
+Un sistema basado solamente en coincidencias buscaría palabras iguales. Un modelo de embeddings puede representar ambos textos y comparar su cercanía para encontrar una relación semántica.
+
+```mermaid
+flowchart LR
+    A[Consulta] --> B[Embedding de la consulta]
+    C[Documentos] --> D[Embeddings de los fragmentos]
+    B --> E[Comparar cercanía]
+    D --> E
+    E --> F[Contenido relacionado]
+```
+
+Este segundo uso aparece en búsquedas semánticas, recomendaciones, clasificación y sistemas RAG. En RAG, los embeddings ayudan primero a encontrar información relacionada. Después, los fragmentos recuperados se incorporan como texto al contexto del modelo, se dividen en tokens y se convierten en los embeddings internos que procesa el Transformer.
+
+```text
+Documentos → embeddings → búsqueda semántica
+                                  ↓
+Pregunta → embedding → fragmentos relacionados
+                                  ↓
+Fragmentos como texto → tokens → embeddings internos → Transformer
+```
+
+En resumen: un **token es una unidad de texto**, su **identificador indica cuál es** y su **embedding es la representación vectorial que el modelo puede procesar y relacionar**.
 
 **Self-attention** es el mecanismo que permite que cada token tenga en cuenta otros tokens de la misma secuencia y determine cuáles son más relevantes para representarlo.
 

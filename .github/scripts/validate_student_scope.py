@@ -9,6 +9,9 @@ import sys
 from pathlib import PurePosixPath
 
 
+INSTRUCTORS = {"andreszam24"}
+
+
 def changed_paths(base: str, head: str) -> list[str]:
     result = subprocess.run(
         ["git", "diff", "--name-only", "--diff-filter=ACDMRT", "-z", base, head],
@@ -19,7 +22,8 @@ def changed_paths(base: str, head: str) -> list[str]:
 
 
 def invalid_paths(author: str, owner: str, paths: list[str]) -> list[str]:
-    if author.casefold() == owner.casefold():
+    exempt_users = {owner.casefold(), *(user.casefold() for user in INSTRUCTORS)}
+    if author.casefold() in exempt_users:
         return []
 
     allowed_parts = ("estudiantes", author.casefold())
