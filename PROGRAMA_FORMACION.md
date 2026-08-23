@@ -64,30 +64,33 @@ Comprender la mecánica interna de los modelos de lenguaje, diagnosticar problem
 
 Configurar Ollama y comparar respuestas de un modelo variando la temperatura entre `0.0` y `1.5`. Medir cómo cambia el determinismo de la salida de código.
 
-### Sesión 2 - Claude Code como agente nativo de terminal
+### Sesión 2 - Codex como agente de desarrollo en terminal y escritorio
 
 **Duración:** 3 horas.
 
 #### Objetivo
 
-Transformar un asistente conversacional en un agente integrado en el sistema de archivos, las reglas del repositorio y el ciclo de control de versiones.
+Pasar de utilizar un asistente conversacional a trabajar con Codex como agente integrado en el sistema de archivos, las reglas del repositorio y el ciclo de control de versiones.
 
 #### Contenidos
 
-- **Arquitectura de Claude Code:** interacción con el sistema de archivos, indexación dinámica del contexto y uso de estructuras sintácticas, como AST, para comprender el proyecto.
-- **Comandos y skills extensibles:** creación de instrucciones y automatizaciones reutilizables alineadas con los patrones arquitectónicos del equipo.
-- **Gobernanza mediante reglas:** definición de directrices en `.claudecode/rules` para imponer nomenclatura, patrones de diseño y restricciones arquitectónicas como un linter semántico.
-- **Git Hooks:** integración con `pre-commit` y `pre-push` para revisar deuda técnica y generar mensajes bajo Conventional Commits.
+- **Codex CLI y aplicación de escritorio:** dos interfaces para inspeccionar archivos, modificar código, ejecutar comandos y revisar resultados sobre un repositorio local.
+- **Ciclo de trabajo agéntico:** comprensión del objetivo, exploración del proyecto, planificación, ejecución y verificación de los cambios.
+- **Contexto e instrucciones:** uso de `AGENTS.md` para comunicar convenciones, comandos, límites y criterios de validación del repositorio.
+- **Permisos y seguridad:** control del acceso al sistema de archivos, la ejecución de comandos y las acciones que necesitan aprobación.
+- **Skills extensibles:** creación de procedimientos reutilizables alineados con los flujos del equipo.
+- **Git y revisión:** inspección del diff, ejecución de pruebas, revisión del código y uso de hooks como `pre-commit` y `pre-push`.
 
 #### Resultados de aprendizaje
 
-- Integrar un agente autónomo en el flujo diario de terminal.
+- Integrar Codex en el flujo diario mediante la terminal o la aplicación de escritorio.
 - Delegar refactorizaciones de archivos completos.
 - Mantener las modificaciones alineadas con las políticas del repositorio.
+- Revisar y validar el trabajo del agente antes de aceptarlo.
 
 #### Taller práctico
 
-Crear una regla que prohíba importaciones o malas prácticas concretas y ordenar una refactorización automática de un módulo heredado que cumpla totalmente la nueva regla.
+Definir reglas en `AGENTS.md` y pedir a Codex que refactorice un módulo heredado. Revisar el diff y ejecutar las pruebas para comprobar que el cambio respeta las reglas y conserva el comportamiento esperado.
 
 ### Sesión 3 - SDD, especificaciones abiertas y ejecución agéntica
 
