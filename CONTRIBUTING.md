@@ -44,10 +44,10 @@ Organización recomendada:
 ```text
 estudiantes/<github-login>/
 ├── README.md
-├── session-01/
-│   └── exercise-01/
-└── session-02/
-    └── exercise-01/
+├── sesion-01/
+│   └── ejercicio-01/
+└── sesion-02/
+    └── ejercicio-01/
 ```
 
 No se permite modificar el material de `sessions/`, la configuración de `.github/`, archivos de la raíz ni la carpeta de otro estudiante. La validación automática bloqueará el pull request si detecta cambios fuera de la carpeta autorizada, incluidos renombrados y eliminaciones.

@@ -870,3 +870,7 @@ ollama stop qwen2.5-coder:1.5b
 ```
 
 Eliminar un modelo es opcional. Si se elimina, Ollama tendrá que descargarlo de nuevo para volver a utilizarlo.
+
+## Ejercicio propuesto
+
+Completa el ejercicio [Experimentar con un modelo local](./ejercicio/README.md) y entrega los resultados desde tu fork mediante un pull request.
