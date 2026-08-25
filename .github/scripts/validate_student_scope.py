@@ -10,6 +10,7 @@ from pathlib import PurePosixPath
 
 
 INSTRUCTORS = {"andreszam24"}
+RESERVED_STUDENT_DIRECTORIES = {"josecarreno"}
 
 
 def changed_paths(base: str, head: str) -> list[str]:
@@ -31,7 +32,12 @@ def invalid_paths(author: str, owner: str, paths: list[str]) -> list[str]:
     for raw_path in paths:
         parts = PurePosixPath(raw_path.replace("\\", "/")).parts
         normalized = tuple(part.casefold() for part in parts[:2])
-        if len(parts) < 3 or normalized != allowed_parts:
+        targets_reserved_directory = (
+            len(parts) >= 2
+            and normalized[0] == "estudiantes"
+            and normalized[1] in RESERVED_STUDENT_DIRECTORIES
+        )
+        if len(parts) < 3 or normalized != allowed_parts or targets_reserved_directory:
             invalid.append(raw_path)
     return invalid
 
@@ -57,8 +63,8 @@ def main() -> int:
     invalid = invalid_paths(args.author, args.owner, paths)
     if invalid:
         print(
-            f"Error: @{args.author} solo puede modificar "
-            f"estudiantes/{args.author}/",
+            f"Error: @{args.author} solo puede modificar su carpeta "
+            f"estudiantes/{args.author}/ y no puede cambiar carpetas reservadas.",
             file=sys.stderr,
         )
         for path in invalid:

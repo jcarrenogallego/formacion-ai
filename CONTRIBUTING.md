@@ -50,7 +50,9 @@ estudiantes/<github-login>/
     └── ejercicio-01/
 ```
 
-No se permite modificar el material de `sessions/`, la configuración de `.github/`, archivos de la raíz ni la carpeta de otro estudiante. La validación automática bloqueará el pull request si detecta cambios fuera de la carpeta autorizada, incluidos renombrados y eliminaciones.
+No se permite modificar el material de `sesiones/`, la configuración de `.github/`, archivos de la raíz ni la carpeta de otro estudiante. La validación automática bloqueará el pull request si detecta cambios fuera de la carpeta autorizada, incluidos renombrados y eliminaciones.
+
+La carpeta `estudiantes/josecarreno/` es un ejemplo de solo lectura. Reproduce su estructura dentro de tu propia carpeta, pero no la modifiques ni envíes allí tus entregas.
 
 ## Enviar una entrega
 

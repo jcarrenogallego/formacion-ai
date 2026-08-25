@@ -2,7 +2,13 @@
 
 Repositorio central del programa de **Ingeniería de Software AI-First** para el grupo de formación.
 
-Aquí se publicarán progresivamente la documentación, los conceptos y los ejercicios de las 11 sesiones del programa (33 horas). El contenido de las sesiones todavía no forma parte de esta primera versión.
+Aquí se publican progresivamente la documentación, los conceptos y los ejercicios de las 11 sesiones del programa (33 horas).
+
+## Sesiones disponibles
+
+- [Sesión 1 - Fundamentos de los LLM y modelos locales](sesiones/sesion-01/)
+- [Sesión 2 - Codex como agente de desarrollo](sesiones/sesion-02/)
+- [Sesión 3 - SDD, especificaciones abiertas y ejecución agéntica](sesiones/sesion-03/)
 
 ## Modelo de trabajo
 
@@ -17,8 +23,9 @@ Los estudiantes no reciben acceso de escritura al repositorio central. Consulta 
 
 ## Organización prevista
 
-- `sessions/01-...` a `sessions/11-...`: materiales y ejercicios publicados por el instructor.
+- `sesiones/sesion-01/` a `sesiones/sesion-11/`: materiales y ejercicios publicados por el instructor.
 - `estudiantes/<github-login>/`: soluciones de cada participante, organizadas internamente por sesión.
+- `estudiantes/josecarreno/`: ejemplo de solo lectura con la estructura de las primeras entregas.
 - `.github/`: automatización y reglas de colaboración.
 
 ## Derechos de autor
