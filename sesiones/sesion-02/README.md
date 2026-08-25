@@ -350,7 +350,7 @@ Las instrucciones, requisitos y diferencias entre ambos proyectos están resumid
 
 > Tiempo estimado: **30 minutos** — 20 minutos para trabajar con Codex y 10 minutos para documentar, hacer commit, push y abrir la PR.
 
-Realiza la refactorización con Codex, comprueba que el agente respeta las reglas del proyecto y documenta las evidencias de su trabajo.
+Utiliza Codex sobre una copia de Delivery Board para refactorizar las pruebas con Moq y el patrón AAA, implementar el evolutivo de eliminación de pendientes y documentar los prompts utilizados. Durante la sesión se inicia el trabajo y se revisa el ciclo del agente; la entrega completa puede finalizarse después de la videollamada.
 
 Las instrucciones completas se encuentran en [`ejercicio/README.md`](ejercicio/README.md).
 

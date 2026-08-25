@@ -1,8 +1,10 @@
-# Ejercicio práctico - Refactorización supervisada con Codex
+# Ejercicio práctico - Evolución de Delivery Board con Codex
 
 ## Objetivo
 
-Utilizar Codex sobre un proyecto real, comunicarle reglas mediante `AGENTS.md`, revisar los cambios que realiza y demostrar con pruebas que la refactorización conserva el comportamiento esperado.
+Trabajar con Codex sobre una aplicación con frontend, backend, base de datos y pruebas. La entrega combina una refactorización técnica con una funcionalidad nueva y exige conservar los prompts utilizados como parte de la evidencia.
+
+Codex puede proponer e implementar cambios, pero cada estudiante debe definir el alcance, revisar el resultado y comprobar personalmente que la solución compila y que sus pruebas pasan.
 
 ## 1. Actualizar el fork y crear una rama
 
@@ -20,78 +22,60 @@ Sustituye `<github-login>` por tu usuario de GitHub. No trabajes directamente so
 
 ## 2. Preparar la entrega
 
-Copia el contenido de `sesiones/sesion-02/material/proyecto-inventario/` dentro de tu carpeta personal hasta obtener esta estructura:
+Copia el proyecto completo de `sesiones/sesion-02/material/proyecto-codex-dotnet/` dentro de tu carpeta personal hasta obtener esta estructura:
 
 ```text
 estudiantes/<github-login>/sesion-02/ejercicio-01/
-├── AGENTS.md
 ├── README.md
-├── prompt.md
-├── package.json
-├── inventario.js
-└── inventario.test.js
+├── prompts/
+│   ├── 01-refactor-tests.md
+│   └── 02-eliminar-pendientes.md
+└── proyecto/
+    ├── AGENTS.md
+    ├── README.md
+    ├── frontend/
+    └── backend/
 ```
 
 No modifiques archivos fuera de `estudiantes/<github-login>/`. La validación automática hará fallar la PR si detecta cambios fuera de tu carpeta.
 
-Entra en el proyecto copiado:
+Entra en el backend copiado y verifica el punto de partida:
 
 ```bash
-cd estudiantes/<github-login>/sesion-02/ejercicio-01
+cd estudiantes/<github-login>/sesion-02/ejercicio-01/proyecto/backend
+dotnet tool restore
+dotnet build DeliveryBoard.slnx
+dotnet test DeliveryBoard.slnx
 ```
 
-Ejecuta las pruebas iniciales:
+## 3. Examinar el proyecto
+
+Antes de pedir cambios a Codex:
+
+1. Lee `proyecto/AGENTS.md`.
+2. Localiza las capas Domain, Application, Infrastructure y Api.
+3. Revisa `DeliveryBoard.Application.UnitTests`.
+4. Comprueba cómo las pruebas actuales crean implementaciones manuales de `IWorkItemRepository`.
+5. Ejecuta la aplicación con Aspire si tu entorno dispone de Docker:
 
 ```bash
-npm test
+dotnet run --project apphost/DeliveryBoard.AppHost
 ```
 
-## 3. Examinar las instrucciones
+El frontend estará disponible en `http://localhost:3000`.
 
-Lee `AGENTS.md` antes de iniciar Codex. Sus reglas exigen, entre otras cosas:
+## 4. Redactar los prompts
 
-- No modificar los datos de entrada.
-- Conservar las exportaciones públicas.
-- No añadir dependencias.
-- Ejecutar las pruebas.
+No se proporciona un prompt resuelto. Convierte los requisitos de los siguientes apartados en instrucciones claras para Codex.
 
-El código inicial incumple la regla de no modificar los argumentos, aunque las pruebas existentes todavía no lo detectan.
+Guarda en cada fichero:
 
-## 4. Trabajar con Codex
+- La interfaz utilizada: Codex CLI o aplicación de escritorio.
+- El prompt inicial exacto.
+- Las preguntas o instrucciones de seguimiento que hayas enviado.
+- Una explicación breve de por qué incluiste esas indicaciones.
 
-Puedes realizar el ejercicio con Codex CLI o con la aplicación de escritorio.
-
-### Desde Codex CLI
-
-Inicia Codex desde la carpeta del ejercicio:
-
-```bash
-codex
-```
-
-Comprueba el entorno y los permisos:
-
-```text
-/status
-/permissions
-```
-
-### Desde la aplicación de escritorio
-
-Abre como proyecto la carpeta `estudiantes/<github-login>/sesion-02/ejercicio-01/` y crea una nueva tarea local.
-
-### Petición para el agente
-
-Redacta un prompt que solicite:
-
-- Analizar el proyecto y sus instrucciones.
-- Detectar el problema del código existente.
-- Refactorizarlo sin cambiar la API pública.
-- Añadir una prueba que demuestre que los argumentos no se modifican.
-- Ejecutar todas las pruebas.
-- Resumir los archivos modificados y las verificaciones realizadas.
-
-Guarda el texto exacto en `prompt.md`:
+Puedes utilizar esta estructura:
 
 ````markdown
 # Prompt utilizado
@@ -100,41 +84,111 @@ Guarda el texto exacto en `prompt.md`:
 
 Codex CLI o aplicación de escritorio.
 
-## Prompt
+## Prompt inicial
 
 ```text
-Escribe aquí el prompt exacto enviado a Codex.
+Escribe aquí el texto exacto enviado a Codex.
 ```
+
+## Seguimientos
+
+```text
+Añade aquí las instrucciones posteriores, si fueron necesarias.
+```
+
+## Decisiones del prompt
+
+Explica qué información decidiste hacer explícita y por qué.
 ````
 
-## 5. Revisar el resultado
+## 5. Refactorizar las pruebas unitarias
+
+Redacta y ejecuta un prompt para que Codex refactorice las pruebas de `DeliveryBoard.Application.UnitTests`.
+
+### Requisitos
+
+- Incorporar **Moq** como dependencia del proyecto de pruebas.
+- Mantener la versión de Moq centralizada en `backend/Directory.Packages.props`.
+- Sustituir las implementaciones manuales de `IWorkItemRepository` por mocks creados con Moq.
+- Eliminar las clases `FakeWorkItemRepository` de las pruebas.
+- Organizar cada prueba con el patrón **AAA** de forma visible:
+  - `// Arrange`: preparación de datos y mocks.
+  - `// Act`: ejecución del caso de uso.
+  - `// Assert`: comprobación del resultado y de las interacciones.
+- Verificar con Moq las llamadas relevantes al repositorio.
+- Conservar el comportamiento cubierto por las pruebas actuales.
+- No modificar el código de producción para facilitar el test.
+- Ejecutar todas las pruebas al terminar.
+
+Guarda el prompt y sus seguimientos en `prompts/01-refactor-tests.md`.
+
+## 6. Implementar el evolutivo: eliminar pendientes
+
+Redacta y ejecuta otro prompt para añadir una funcionalidad que elimine todas las tareas con estado `Pending`.
+
+### Frontend
+
+- Añadir el botón **Eliminar pendientes** junto al botón **Actualizar** del panel `Trabajo reciente`.
+- Deshabilitarlo mientras se procesa la solicitud.
+- Llamar al backend mediante `DELETE /api/work-items/pending`.
+- Volver a cargar el dashboard cuando la operación termine correctamente.
+- Mostrar la cantidad de tareas eliminadas.
+- Mostrar el detalle del error de negocio cuando no existan tareas pendientes.
+- Mantener JavaScript sin frameworks ni dependencias adicionales.
+
+### Backend
+
+- Ampliar `IWorkItemRepository` con una operación asíncrona para eliminar las tareas pendientes y devolver la cantidad eliminada.
+- Implementar la operación en Infrastructure mediante Entity Framework Core.
+- Crear en Application una interfaz y un caso de uso específico.
+- Lanzar `BusinessRuleException` con el mensaje exacto `No hay tareas pendientes para eliminar.` cuando no se elimine ninguna tarea.
+- Registrar el caso de uso en la inyección de dependencias.
+- Exponer `DELETE /api/work-items/pending` desde la Minimal API.
+- Devolver `200 OK` con un objeto que contenga `deletedCount` cuando la operación sea correcta.
+- Mantener el manejo global existente mediante `ProblemDetails`.
+- No añadir MediatR, AutoMapper ni servicios de dominio.
+
+### Pruebas del evolutivo
+
+- Añadir pruebas unitarias para el caso de uso nuevo.
+- Utilizar Moq y el patrón AAA explícito.
+- Comprobar que devuelve la cantidad eliminada cuando el repositorio devuelve un valor mayor que cero.
+- Comprobar que lanza `BusinessRuleException` cuando el repositorio devuelve cero.
+- Verificar el mensaje exacto de la excepción.
+- Verificar las llamadas realizadas al repositorio.
+
+Guarda el prompt y sus seguimientos en `prompts/02-eliminar-pendientes.md`.
+
+## 7. Revisar y validar el resultado
 
 No aceptes el resultado únicamente porque Codex indique que terminó.
 
-Fuera de Codex, revisa los cambios:
+Revisa los cambios:
 
 ```bash
 git status
 git diff -- estudiantes/<github-login>/sesion-02/ejercicio-01
 ```
 
-Ejecuta personalmente las pruebas:
+Ejecuta personalmente:
 
 ```bash
-npm test
+cd estudiantes/<github-login>/sesion-02/ejercicio-01/proyecto/backend
+dotnet build DeliveryBoard.slnx
+dotnet test DeliveryBoard.slnx
 ```
 
-Comprueba que:
+Si dispones de Docker, inicia Aspire y comprueba en el navegador:
 
-- `inventario.js` ya no modifica los productos recibidos.
-- Las funciones exportadas conservan sus nombres.
-- Existe una prueba nueva para detectar mutaciones.
-- No se añadieron dependencias.
-- Todas las pruebas terminan correctamente.
+1. Crear varias tareas pendientes.
+2. Pulsar `Eliminar pendientes`.
+3. Verificar que desaparecen y se actualizan los contadores.
+4. Pulsar nuevamente el botón.
+5. Verificar que aparece el mensaje `No hay tareas pendientes para eliminar.`.
 
-## 6. Documentar la experiencia
+## 8. Documentar la experiencia
 
-Completa `README.md` con esta estructura:
+Completa el `README.md` de la entrega:
 
 ```markdown
 # Entrega de la sesión 2
@@ -142,42 +196,48 @@ Completa `README.md` con esta estructura:
 ## Entorno
 
 - Usuario de GitHub:
-- Interfaz utilizada: Codex CLI o aplicación de escritorio
+- Interfaz utilizada:
 - Versión de Codex:
 
-## Trabajo del agente
+## Refactorización de pruebas
 
-- Archivos que Codex consultó:
-- Archivos que modificó:
-- Comandos que ejecutó:
+- Problema de la implementación inicial:
+- Cambios realizados para utilizar Moq:
+- Cómo se aplicó el patrón AAA:
+- Verificaciones del repositorio añadidas:
 
-## Cumplimiento de AGENTS.md
+## Evolutivo
 
-Explica qué reglas debía respetar y cómo comprobaste su cumplimiento.
-
-## Revisión del cambio
-
-- Problema encontrado en el código inicial:
-- Solución aplicada:
-- Prueba añadida:
-- Resultado final de `npm test`:
+- Capas y archivos modificados:
+- Flujo desde el botón hasta PostgreSQL:
+- Regla de negocio incorporada:
+- Pruebas añadidas:
 
 ## Supervisión
 
-Describe al menos una decisión, propuesta o resultado de Codex que hayas revisado personalmente.
+- Propuesta de Codex que revisaste o corregiste:
+- Instrucción de seguimiento que necesitaste:
+- Decisión que validaste personalmente:
+
+## Validación
+
+- Resultado de `dotnet build DeliveryBoard.slnx`:
+- Resultado de `dotnet test DeliveryBoard.slnx`:
+- Número total de pruebas:
+- Resultado de la comprobación manual:
 
 ## Conclusión
 
-1. ¿Qué diferencia observaste entre pedir código en un chat y delegar la tarea a Codex?
-2. ¿Qué información útil aportó AGENTS.md?
-3. ¿Por qué el mensaje final del agente no es suficiente para aceptar el cambio?
+1. ¿Qué información faltó en tu primer prompt?
+2. ¿Qué cambió después de añadir instrucciones más concretas?
+3. ¿Por qué las pruebas deben formar parte explícita de la definición de terminado?
 ```
 
-No es necesario adjuntar capturas. El prompt, el diff final, las pruebas y el análisis escrito constituyen la evidencia.
+No es necesario adjuntar capturas. El código, los prompts, las pruebas y el análisis escrito constituyen la evidencia.
 
-## 7. Commit, push y pull request
+## 9. Commit, push y pull request
 
-Verifica que solamente hayas modificado tu carpeta:
+Confirma que todos los cambios están dentro de tu carpeta:
 
 ```bash
 git status
@@ -187,22 +247,25 @@ Crea el commit:
 
 ```bash
 git add estudiantes/<github-login>/sesion-02/ejercicio-01
-git commit -m "feat: completar ejercicio de la sesion 2"
+git commit -m "feat(session-02): complete Delivery Board exercise"
 ```
 
-Envía la rama a tu fork:
+Publica la rama:
 
 ```bash
 git push -u origin <github-login>/sesion-02-ejercicio-01
 ```
 
-Abre una pull request desde esa rama hacia `jcarrenogallego/formacion-ai:main` y completa la plantilla del repositorio.
+Abre una pull request hacia `jcarrenogallego/formacion-ai:main` y completa la plantilla del repositorio.
 
 ## Criterios de evaluación
 
-- La entrega se encuentra únicamente en la carpeta personal correcta.
-- `prompt.md` contiene la petición exacta enviada a Codex.
-- La refactorización conserva la API pública y evita modificar los argumentos.
-- Una prueba automática demuestra que los datos de entrada permanecen intactos.
-- Todas las pruebas pasan.
-- El análisis explica con palabras propias cómo se supervisó al agente.
+- La entrega modifica únicamente `estudiantes/<github-login>/`.
+- El proyecto completo está incluido en `proyecto/`.
+- Los prompts exactos y sus seguimientos están versionados en Markdown.
+- Las pruebas utilizan Moq y muestran explícitamente Arrange, Act y Assert.
+- No quedan repositorios falsos implementados manualmente en las pruebas.
+- El evolutivo atraviesa correctamente frontend, API, Application, Domain e Infrastructure.
+- La ausencia de pendientes produce el error de negocio solicitado.
+- La solución compila y todas las pruebas pasan.
+- El README explica cómo se supervisó y verificó el trabajo del agente.
