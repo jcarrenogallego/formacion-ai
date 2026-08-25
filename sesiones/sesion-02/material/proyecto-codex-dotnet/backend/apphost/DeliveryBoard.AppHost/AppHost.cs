@@ -14,7 +14,7 @@ var api = builder
 
 builder
     .AddJavaScriptApp("frontend", "../../../frontend", "start")
-    .WithHttpEndpoint(env: "PORT")
+    .WithHttpEndpoint(port: 3000, env: "PORT", name: "http")
     .WithReference(api)
     .WaitFor(api)
     .WithExternalHttpEndpoints();

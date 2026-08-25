@@ -7,8 +7,8 @@ const publicDirectory = path.join(__dirname, "public");
 
 function getApiUrl() {
   return process.env.API_URL
-    ?? process.env.services__api__https__0
     ?? process.env.services__api__http__0
+    ?? process.env.services__api__https__0
     ?? "http://localhost:5080";
 }
 
@@ -19,10 +19,12 @@ const contentTypes = {
 };
 
 async function proxyToApi(request, response) {
+  const hasBody = request.method !== "GET" && request.method !== "HEAD";
   const apiResponse = await fetch(new URL(request.url, getApiUrl()), {
     method: request.method,
     headers: { "content-type": request.headers["content-type"] ?? "application/json" },
-    body: request.method === "GET" ? undefined : request
+    body: hasBody ? request : undefined,
+    duplex: hasBody ? "half" : undefined
   });
 
   response.writeHead(apiResponse.status, {

@@ -40,7 +40,15 @@ dotnet tool restore
 dotnet run --project apphost/DeliveryBoard.AppHost
 ```
 
-La terminal mostrará la dirección del panel de Aspire. Desde ese panel se puede abrir el frontend, la API y sus logs.
+La terminal mostrará la dirección del panel de Aspire. Desde ese panel se puede observar el frontend en ejecución, abrir su URL y consultar sus logs.
+
+El frontend utiliza siempre la misma dirección:
+
+```text
+http://localhost:3000
+```
+
+En el panel, `frontend-installer` termina después de ejecutar `npm install`. El recurso que representa el servidor web es `frontend`: debe aparecer como **Running** y mostrar `http://localhost:3000` en la columna de direcciones.
 
 La documentación interactiva de la API está en la ruta `/swagger` del recurso `api`.
 
