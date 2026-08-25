@@ -48,4 +48,3 @@ public sealed class CreateWorkItemUseCaseTests
             Task.FromResult<IReadOnlyCollection<WorkItem>>(Items);
     }
 }
-
