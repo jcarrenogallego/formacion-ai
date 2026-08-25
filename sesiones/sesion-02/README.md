@@ -318,18 +318,23 @@ flowchart LR
 
 > Tiempo estimado: **14 minutos**
 
-Utilizaremos el proyecto incluido en [`material/proyecto-inventario`](material/proyecto-inventario/) para observar el ciclo completo:
+Disponemos de [dos proyectos alternativos](material/), con distintos niveles de complejidad:
+
+- [`proyecto-inventario`](material/proyecto-inventario/): JavaScript sin dependencias, pocos archivos y pruebas rápidas. Permite concentrarnos en el ciclo básico de Codex.
+- [`proyecto-codex-dotnet`](material/proyecto-codex-dotnet/): frontend JavaScript y backend .NET 10 con varias capas, pruebas, PostgreSQL y Aspire. Permite explorar cómo el agente trabaja sobre una solución más completa.
+
+Podemos empezar con el inventario y utilizar Delivery Board para ampliar la demostración. En cualquiera de las dos alternativas observaremos el mismo ciclo:
 
 1. Abrir el proyecto con Codex CLI.
 2. Pedirle que explique la estructura antes de modificarla.
 3. Revisar las reglas de `AGENTS.md`.
-4. Solicitar la refactorización de `inventario.js`.
+4. Solicitar un cambio concreto y acotado.
 5. Observar qué archivos consulta y qué comandos ejecuta.
 6. Revisar el diff generado.
 7. Ejecutar las pruebas.
 8. Pedir una revisión final del cambio.
 
-Prompt de ejemplo:
+Prompt de ejemplo para el inventario:
 
 ```text
 Analiza este proyecto y refactoriza el módulo de inventario respetando AGENTS.md.
@@ -338,6 +343,8 @@ y ejecuta las pruebas. Al terminar, resume los cambios y las comprobaciones real
 ```
 
 Después repetiremos la inspección desde la aplicación de escritorio para localizar visualmente la tarea, los archivos modificados, el diff y la evidencia de las pruebas.
+
+Las instrucciones, requisitos y diferencias entre ambos proyectos están resumidos en [`material/README.md`](material/README.md).
 
 ## Ejercicio de la sesión
 
