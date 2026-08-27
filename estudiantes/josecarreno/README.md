@@ -1,6 +1,6 @@
 # Ejemplo de carpeta personal
 
-Esta carpeta muestra cómo organizar las entregas de las tres primeras sesiones.
+Esta carpeta muestra cómo organizar las entregas de las sesiones publicadas.
 
 Para utilizarla como referencia:
 
@@ -16,7 +16,9 @@ estudiantes/<github-login>/
 │   └── ejercicio-01/
 ├── sesion-02/
 │   └── ejercicio-01/
-└── sesion-03/
+├── sesion-03/
+│   └── ejercicio-01/
+└── sesion-04/
     └── ejercicio-01/
 ```
 

@@ -9,6 +9,7 @@ Aquí se publican progresivamente la documentación, los conceptos y los ejercic
 - [Sesión 1 - Fundamentos de los LLM y modelos locales](sesiones/sesion-01/)
 - [Sesión 2 - Codex como agente de desarrollo](sesiones/sesion-02/)
 - [Sesión 3 - SDD, especificaciones abiertas y ejecución agéntica](sesiones/sesion-03/)
+- [Sesión 4 - Contexto persistente y control de entropía](sesiones/sesion-04/)
 
 ## Modelo de trabajo
 
@@ -25,7 +26,7 @@ Los estudiantes no reciben acceso de escritura al repositorio central. Consulta 
 
 - `sesiones/sesion-01/` a `sesiones/sesion-11/`: materiales y ejercicios publicados por el instructor.
 - `estudiantes/<github-login>/`: soluciones de cada participante, organizadas internamente por sesión.
-- `estudiantes/josecarreno/`: ejemplo de solo lectura con la estructura de las primeras entregas.
+- `estudiantes/josecarreno/`: ejemplo de solo lectura con la estructura de las entregas publicadas.
 - `.github/`: automatización y reglas de colaboración.
 
 ## Derechos de autor
