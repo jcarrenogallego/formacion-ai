@@ -1,357 +1,355 @@
-# Sesión 3 - SDD, especificaciones abiertas y ejecución agéntica
+# Sesión 3 - Desarrollo guiado por especificaciones con OpenSpec
 
-> Duración total: **3 horas** — 170 minutos de contenido y práctica, más 10 minutos de descanso.
+> **Duración aproximada: 3 horas, incluido un descanso de 10 minutos.**
 
-## 3.0 - De delegar a especificar
+## 3.0 - De una petición a una especificación — 5 min
 
-> Tiempo estimado: **6 minutos**
+En la sesión anterior utilizamos Codex para trabajar sobre un proyecto existente. Ahora daremos un paso más: antes de modificar el código, convertiremos una necesidad en una especificación revisable.
 
-Codex puede explorar un proyecto, modificarlo y ejecutar pruebas, pero no conoce las decisiones que todavía no hemos tomado. Cuando recibe un requerimiento ambiguo, necesita hacer suposiciones o detenerse para preguntar.
-
-En esta sesión pasaremos de delegar una petición a construir una especificación que pueda guiar todo el trabajo:
-
-```mermaid
-flowchart LR
-    A[Requerimiento] --> B[Descubrimiento]
-    B --> C[Especificación]
-    C --> D[Plan]
-    D --> E[Tareas]
-    E --> F[Implementación]
-    F --> G[Verificación]
-    G -->|Hay diferencias| C
-    G -->|Cumple| H[Entrega]
-```
-
-## 3.1 - El coste de la ambigüedad
-
-> Tiempo estimado: **10 minutos**
-
-Partamos de una petición aparentemente sencilla:
+Un requerimiento como este parece sencillo:
 
 > Queremos poder eliminar las tareas que estén en determinados estados.
 
-Antes de programar necesitamos resolver preguntas como:
+Sin embargo, todavía no sabemos qué estados están permitidos, quién selecciona las tareas, qué debe ocurrir si no hay resultados ni cómo se comprobará que el cambio funciona.
 
-- ¿Qué estados pueden eliminarse?
-- ¿Se selecciona uno o varios estados?
-- ¿La eliminación es física o lógica?
-- ¿Qué ocurre si no hay coincidencias?
-- ¿Qué devuelve la API?
-- ¿Debe pedirse confirmación en la interfaz?
-- ¿La operación debe ser atómica?
-- ¿Se conserva el endpoint anterior?
-
-Una respuesta inventada por el agente puede producir código técnicamente correcto que resuelva el problema equivocado.
-
-### Requerimiento, supuesto y decisión
-
-- Un **requerimiento** expresa una necesidad.
-- Una **pregunta abierta** identifica información que falta.
-- Un **supuesto** permite avanzar provisionalmente, pero debe quedar visible.
-- Una **decisión** resuelve una alternativa y pasa a formar parte del contrato.
-- Una **restricción** marca un límite que la solución debe respetar.
-
-## 3.2 - Qué es SDD
-
-> Tiempo estimado: **10 minutos**
-
-**Specification-Driven Development** es una forma de desarrollar en la que una especificación versionada guía el diseño, la planificación, la implementación y la verificación.
-
-SDD no depende de un framework concreto. Existen herramientas que automatizan el proceso, pero un equipo también puede construir su propio estándar utilizando Markdown, contratos abiertos, diagramas, pruebas y las convenciones de su repositorio.
-
-| Prompt aislado | Especificación viva |
-|---|---|
-| Vive dentro de una conversación. | Vive dentro del repositorio. |
-| Puede mezclar objetivo e implementación. | Separa problema, contrato, plan y tareas. |
-| Resulta difícil de reutilizar. | Puede ser leída por personas y agentes. |
-| Favorece nuevas explicaciones en cada iteración. | Conserva las decisiones ya tomadas. |
-| No ofrece por sí mismo trazabilidad. | Relaciona requisitos, código y pruebas. |
-
-### Precisión y uso del contexto
-
-Una especificación breve y estructurada puede reducir tokens desperdiciados porque evita repetir contexto, corregir supuestos y rehacer implementaciones. No garantiza que el agente nunca se equivoque, pero disminuye el espacio disponible para interpretaciones y hace más fácil detectar una desviación.
-
-```text
-Menos ambigüedad
-      ↓
-Menos suposiciones
-      ↓
-Menos reprocesamiento
-      ↓
-Más precisión y mejor uso del contexto
+```mermaid
+flowchart LR
+    A[Petición ambigua] --> B[Preguntas y decisiones]
+    B --> C[Especificación]
+    C --> D[Plan y tareas]
+    D --> E[Implementación]
+    E --> F[Verificación]
 ```
 
-## 3.3 - Anatomía de una especificación útil
+## 3.1 - El coste de la ambigüedad — 5 min
 
-> Tiempo estimado: **14 minutos**
+Cuando faltan decisiones, el agente tiene que suponer. Puede producir código válido que no resuelva la necesidad real.
 
-No existe una única plantilla universal. Nuestro estándar debe conservar la información necesaria para implementar y comprobar el comportamiento.
+| Situación | Consecuencia posible |
+|---|---|
+| No se define el alcance | Se modifican componentes innecesarios |
+| Faltan reglas de negocio | El comportamiento se decide durante la implementación |
+| No hay criterios de aceptación | No sabemos cuándo el trabajo está terminado |
+| Se cambia de idea tarde | Se repiten análisis, código y pruebas |
 
-### Contexto y objetivo
+Una especificación no elimina la incertidumbre: la hace visible antes de empezar a programar.
 
-- Problema actual.
-- Personas o sistemas afectados.
-- Valor esperado.
+## 3.2 - Qué es SDD — 10 min
 
-### Alcance y fuera de alcance
+**Specification-Driven Development (SDD)** es una forma de trabajar en la que una especificación versionada guía el diseño, las tareas, la implementación y la verificación.
 
-- Comportamientos incluidos.
-- Capas y sistemas afectados.
-- Funcionalidades que se aplazan o se excluyen.
+La especificación actúa como un contrato compartido entre personas y agentes. Al aportar contexto estructurado:
 
-### Definiciones
+- reduce suposiciones y reprocesamientos;
+- aprovecha mejor la ventana de contexto y los tokens;
+- permite revisar el comportamiento antes del código;
+- reduce el riesgo de que el agente invente detalles;
+- no sustituye la revisión humana ni garantiza que el resultado sea correcto.
 
-- Entidades y estados.
-- Operaciones.
-- Términos que podrían interpretarse de varias maneras.
+En esta sesión, **implementación zero-shot** no significa entregar una frase vaga y confiar en un único intento. Significa que, después de revisar una especificación suficientemente clara, el agente puede abordar la implementación sin improvisar requisitos durante el desarrollo.
 
-### Reglas y contratos
+## 3.3 - Qué debe describir una especificación — 15 min
 
-- Reglas de negocio.
-- Entradas y salidas.
-- Errores esperados.
-- Restricciones técnicas.
+No necesitamos un documento enorme. Necesitamos decisiones claras.
 
-### Verificación
+| Parte | Pregunta que responde |
+|---|---|
+| Objetivo | ¿Qué problema queremos resolver? |
+| Alcance | ¿Qué entra y qué queda fuera? |
+| Requisitos | ¿Qué debe poder hacer el sistema? |
+| Reglas de negocio | ¿Qué comportamientos son obligatorios? |
+| Diseño | ¿Qué componentes y contratos cambiarán? |
+| Criterios de aceptación | ¿Cómo sabremos que funciona? |
+| Tareas | ¿En qué orden se implementará? |
+| Verificación | ¿Qué pruebas y controles deben pasar? |
 
-- Criterios de aceptación.
-- Pruebas necesarias.
-- Condiciones para considerar terminado el cambio.
+### Límites, modelo e invariantes
 
-Una buena especificación contiene suficiente precisión, pero evita explicar código que el propio repositorio ya permite descubrir.
+- **Límite:** indica qué puede modificar el agente y qué queda fuera del cambio.
+- **Modelo de datos:** define entidades, estados y datos relevantes sin describir cada detalle del código.
+- **Invariante:** regla que siempre debe cumplirse, como «una tarea completada no puede volver a pendiente».
+- **Flujo lógico:** orden visible de decisiones desde la entrada hasta el resultado o el error.
 
-## 3.4 - Historia de usuario y Gherkin
+```mermaid
+flowchart LR
+    A[Solicitud] --> B{¿Cumple las reglas?}
+    B -->|Sí| C[Aplicar cambio]
+    B -->|No| D[Devolver error de negocio]
+```
 
-> Tiempo estimado: **14 minutos**
+### Historia de usuario y Gherkin
 
-Una historia de usuario conecta la necesidad con su valor:
+Una historia de usuario aporta intención:
 
 ```text
 Como responsable del tablero
-quiero eliminar tareas según su estado
-para limpiar el tablero sin eliminar trabajo que debe conservarse.
+quiero eliminar las tareas pendientes
+para limpiar trabajo que ya no debe realizarse.
 ```
 
-La historia no basta para implementar. Los criterios de aceptación convierten la intención en comportamientos observables.
+Gherkin convierte ejemplos de comportamiento en criterios observables:
 
 ```gherkin
-Feature: Eliminación de tareas por estado
-
-  Scenario: Eliminar tareas de un estado permitido
-    Given que existen tareas pendientes y completadas
-    When solicito eliminar las tareas pendientes
-    Then las tareas pendientes dejan de aparecer
-    And las tareas completadas se conservan
-    And la respuesta indica cuántas tareas se eliminaron
+Scenario: Eliminar tareas pendientes
+  Given que existen tareas con estado "Pending"
+  When el usuario solicita eliminar las tareas pendientes
+  Then las tareas con estado "Pending" dejan de aparecer
+  And las tareas de otros estados se conservan
 ```
 
-- `Given` prepara el estado inicial.
-- `When` representa la acción.
-- `Then` expresa el resultado observable.
-- `And` añade condiciones del mismo escenario.
+Estos criterios no son necesariamente pruebas automatizadas, pero pueden guiar su creación.
 
-También deben describirse escenarios alternativos: solicitud vacía, estado inválido, estado protegido, ausencia de coincidencias y fallo inesperado.
+## 3.4 - Artefactos abiertos y versionables — 5 min
 
-## 3.5 - Reglas, invariantes y errores
+SDD funciona mejor cuando sus artefactos son texto que puede revisarse mediante Git:
 
-> Tiempo estimado: **12 minutos**
-
-- Una **regla de negocio** indica un comportamiento obligatorio.
-- Una **invariante** debe seguir siendo verdadera antes y después de la operación.
-- Una **precondición** debe cumplirse para ejecutar la acción.
-- Una **postcondición** debe cumplirse después de ejecutarla.
-
-Ejemplos:
-
-```text
-Regla: solo pueden eliminarse estados autorizados.
-Invariante: eliminar Pending nunca puede afectar Completed.
-Precondición: debe indicarse al menos un estado.
-Postcondición: deletedCount coincide con las tareas eliminadas.
-```
-
-Cada error esperado debe indicar:
-
-- Condición que lo provoca.
-- Mensaje o código estable.
-- Estado HTTP.
-- Representación mediante `ProblemDetails`.
-
-## Descanso
-
-> Tiempo estimado: **10 minutos**
-
-## 3.6 - Especificaciones abiertas
-
-> Tiempo estimado: **16 minutos**
-
-### Markdown
-
-Será el contenedor principal: se lee fácilmente, se versiona con Git y puede enlazar el resto de artefactos.
-
-### Mermaid
-
-Permite representar flujos y relaciones cerca del texto que los explica.
+- **Markdown:** requisitos, decisiones, diseño y tareas.
+- **Mermaid:** flujos y relaciones visuales.
+- **OpenAPI:** contrato HTTP de una API.
+- **AsyncAPI:** contrato para eventos y mensajes asíncronos; lo reconoceremos, aunque Delivery Board utiliza HTTP.
+- **Gherkin:** ejemplos de comportamiento comprensibles.
+- **Código y pruebas:** evidencia de la implementación.
 
 ```mermaid
-sequenceDiagram
-    actor Usuario
-    participant Frontend
-    participant API
-    participant CasoUso
-    participant Repositorio
-    participant PostgreSQL
-
-    Usuario->>Frontend: Selecciona estados
-    Frontend->>API: Solicita eliminación
-    API->>CasoUso: Ejecuta la operación
-    CasoUso->>Repositorio: Elimina coincidencias
-    Repositorio->>PostgreSQL: DELETE
-    PostgreSQL-->>Repositorio: Cantidad eliminada
-    Repositorio-->>CasoUso: deletedCount
-    CasoUso-->>Frontend: Resultado o error
+flowchart TD
+    R[Requisitos] --> D[Diseño]
+    D --> T[Tareas]
+    T --> C[Código]
+    R --> P[Pruebas]
+    C --> V[Verificación]
+    P --> V
 ```
 
-### OpenAPI
+Cuando el código, las pruebas y la especificación dejan de representar el mismo comportamiento aparece **deriva**. Por eso deben evolucionar juntos.
 
-Formaliza el contrato HTTP:
+## 3.5 - Frameworks SDD: OpenSpec y Spec Kit — 5 min
 
-- Ruta y método.
-- Parámetros o cuerpo.
-- Esquemas.
-- Respuestas correctas.
-- Errores.
+El concepto SDD no pertenece a una herramienta concreta. Un equipo puede crear su propio flujo, pero no necesita empezar desde cero.
 
-La especificación debe resolver, por ejemplo, si la operación utiliza parámetros de consulta o un cuerpo con una colección de estados. La decisión debe aparecer antes que el código.
+### OpenSpec
 
-### AsyncAPI
+OpenSpec instala flujos reutilizables en el agente y mantiene las especificaciones dentro del repositorio. Su ciclo principal es sencillo:
 
-AsyncAPI cumple una función parecida para eventos y mensajería. Delivery Board no utiliza comunicación asíncrona, por lo que lo reconoceremos sin incorporarlo artificialmente al ejercicio.
+```text
+explorar → proponer → revisar → implementar → verificar → archivar
+```
 
-## 3.7 - La especificación como fuente de verdad
+Lo utilizaremos porque encaja bien en un proyecto existente y permite generar la propuesta, las especificaciones, el diseño y las tareas antes de tocar el código.
 
-> Tiempo estimado: **10 minutos**
+### Spec Kit
 
-La especificación debe vivir dentro del proyecto y utilizar rutas predecibles:
+Spec Kit es otra alternativa conocida. Ofrece fases como constitución del proyecto, especificación, aclaración, planificación, tareas, análisis e implementación. Es útil conocerlo, aunque en esta guía trabajaremos solamente con OpenSpec para mantener un único flujo.
+
+## 3.6 - Instalar y preparar OpenSpec para Codex — 15 min
+
+### Requisito
+
+OpenSpec necesita Node.js 20.19 o superior:
+
+```powershell
+node --version
+```
+
+### Instalar la CLI
+
+```powershell
+npm install -g @fission-ai/openspec@latest
+openspec --version
+```
+
+### Inicializar un proyecto
+
+Ejecuta el comando desde la raíz de Delivery Board:
+
+```powershell
+openspec init --tools codex --no-animation
+```
+
+OpenSpec incorpora dos elementos al proyecto:
 
 ```text
 proyecto/
-├── AGENTS.md
-├── specs/
-│   └── delete-work-items-by-status/
-│       ├── README.md
-│       ├── requirements.md
-│       ├── acceptance.feature
-│       ├── openapi.yaml
-│       ├── implementation-plan.md
-│       └── traceability.md
-├── frontend/
-└── backend/
+├── .agents/skills/       # Flujos que puede invocar Codex
+└── openspec/
+    ├── config.yaml       # Contexto y reglas del proyecto
+    ├── specs/            # Especificaciones vigentes
+    └── changes/          # Cambios que están en preparación
 ```
 
-Reglas de nuestro estándar:
+Estos archivos forman parte del proyecto y deben versionarse. Después de inicializar, reinicia Codex para que detecte las skills.
 
-- Las decisiones no permanecen únicamente en el chat.
-- Los documentos se enlazan entre sí.
-- Codex recibe la ruta exacta de la especificación.
-- Una decisión nueva actualiza la fuente de verdad.
-- El contrato debe evolucionar junto al comportamiento.
-- El prompt activa una fase; no reemplaza la especificación.
+### Abrir el proyecto con Codex CLI
 
-## 3.8 - El flujo SDD con Codex
+La CLI debe iniciarse desde la raíz del proyecto que contiene `.agents/` y `openspec/`:
 
-> Tiempo estimado: **14 minutos**
+```powershell
+cd sesiones/sesion-03/material/proyecto-codex-dotnet
+codex
+```
 
-### 1. Descubrimiento
+Dentro de la conversación de Codex, escribe `$` y selecciona la skill correspondiente o escribe directamente su nombre:
 
-Codex analiza el requerimiento y el proyecto, identifica ambigüedades y propone preguntas. Todavía no implementa.
+```text
+$openspec-explore Analiza el requerimiento y ayúdame a identificar sus ambigüedades. No implementes todavía.
+```
 
-### 2. Especificación
+Si las skills no aparecen después de ejecutar `openspec init`, cierra la CLI, vuelve a abrirla desde la raíz del proyecto y comprueba que existe `.agents/skills/`.
 
-Se documentan decisiones, historia, alcance, reglas, escenarios, contrato y flujos.
+### Abrir el proyecto en la aplicación visual de Codex
 
-### 3. Revisión humana
+1. Abre en Codex la carpeta `sesiones/sesion-03/material/proyecto-codex-dotnet` como proyecto o espacio de trabajo.
+2. Crea una tarea nueva dentro de esa carpeta.
+3. En el cuadro de texto, escribe `$` para buscar la skill o escribe directamente `$openspec-explore`.
+4. Añade el requerimiento después del nombre de la skill y envíalo.
+5. Revisa desde la vista de cambios los documentos que OpenSpec cree bajo `openspec/changes/`.
 
-La persona responsable responde preguntas, rechaza supuestos y aprueba el contrato.
+```text
+$openspec-explore Analiza el requerimiento y ayúdame a identificar sus ambigüedades. No implementes todavía.
+```
 
-### 4. Planificación
+La CLI y la aplicación visual utilizan las mismas skills del proyecto. Lo importante en ambos casos es abrir Codex con `proyecto-codex-dotnet` como carpeta de trabajo, no con una carpeta superior que deje `.agents/skills/` fuera de la raíz activa.
 
-Codex convierte la especificación en cambios por capa, tareas, dependencias y verificaciones.
+## Descanso — 10 min
 
-### 5. Implementación
+## 3.7 - El flujo automatizado con OpenSpec y Codex — 30 min
 
-El agente ejecuta tareas acotadas utilizando la especificación como referencia.
-
-### 6. Verificación
-
-Se comparan especificación, código, pruebas y comportamiento. Una diferencia obliga a corregir el código o actualizar conscientemente el contrato.
+OpenSpec no es otro modelo. Es un conjunto de instrucciones, plantillas y herramientas que guía al agente por un proceso repetible.
 
 ```mermaid
 flowchart LR
-    S[Especificación] <--> C[Código]
-    S <--> T[Pruebas]
-    C <--> T
-    T --> R[Resultado verificable]
+    A[Requerimiento] --> B[Explore]
+    B --> C[Propose]
+    C --> D{Revisión humana}
+    D -->|Ajustar| C
+    D -->|Aprobar| E[Apply]
+    E --> F[Verify]
+    F --> G[Archive]
 ```
 
-## 3.9 - Del diseño al plan y las tareas
+### 1. Explorar la necesidad
 
-> Tiempo estimado: **12 minutos**
-
-La especificación no debería convertirse en una única tarea enorme. Un plan posible sería:
-
-1. Aprobar requisitos y criterios.
-2. Actualizar OpenAPI.
-3. Ampliar el contrato de dominio.
-4. Implementar persistencia.
-5. Crear el caso de uso y sus pruebas.
-6. Exponer el endpoint.
-7. Modificar el frontend.
-8. Verificar errores y escenarios.
-9. Ejecutar build y tests.
-10. Comparar el resultado con la especificación.
-
-Cada tarea debe contener objetivo, alcance, dependencias, criterio de terminado y verificaciones. Esta división permite revisar el trabajo antes de que una suposición se propague por toda la solución.
-
-## 3.10 - Trazabilidad y control de deriva
-
-> Tiempo estimado: **12 minutos**
-
-La trazabilidad relaciona cada decisión con una evidencia:
+Cuando todavía hay demasiadas dudas, podemos empezar con:
 
 ```text
-Requisito → Criterio → Tarea → Código → Prueba
+$openspec-explore Analiza el requerimiento de eliminar tareas que estén en determinados estados. Identifica ambigüedades y no implementes todavía.
 ```
 
-| Requisito | Criterio | Implementación | Prueba | Estado |
-|---|---|---|---|---|
-| Eliminar por estado | Escenario principal | Caso de uso | Test exitoso | Cumple |
-| Conservar otros estados | Escenario principal | Repositorio | Test de filtrado | Cumple |
-| Informar sin coincidencias | Escenario alternativo | Excepción | Test de error | Cumple |
+La exploración ayuda a pensar, pero no crea todavía un cambio formal.
 
-Existe **deriva** cuando el código, el contrato y las pruebas dejan de representar el mismo comportamiento. La comparación no tiene que depender de una herramienta especializada: podemos crear nuestro propio control mediante revisión del diff, validación de OpenAPI, build, pruebas y una matriz de trazabilidad.
+### 2. Crear la propuesta completa
 
-Los frameworks SDD pueden automatizar fases y controles, pero primero debemos comprender y poder adaptar el proceso manual.
+```text
+$openspec-propose Queremos poder eliminar las tareas que estén en determinados estados.
+```
 
-## Taller práctico
+La skill analiza el repositorio y crea bajo `openspec/changes/<nombre-del-cambio>/`:
 
-> Tiempo estimado: **40 minutos** — inicio del proceso SDD durante la sesión y finalización posterior de la entrega.
+- propuesta y objetivo;
+- requisitos o cambios de especificación;
+- diseño técnico;
+- lista ordenada de tareas.
 
-El ejercicio continúa sobre Delivery Board y parte únicamente de este requerimiento:
+### 3. Revisar antes de implementar
 
-> Queremos poder eliminar las tareas que estén en determinados estados.
+El desarrollador debe leer los artefactos, resolver las preguntas pendientes y pedir correcciones. Este es el control más importante del flujo.
 
-No se proporciona una solución ni prompts preparados. Cada estudiante debe recorrer y documentar descubrimiento, especificación, planificación, implementación y verificación.
+```text
+$openspec-update-change Revisa el cambio activo con estas decisiones: solo se eliminan tareas Pending, si no existe ninguna se devuelve un error de negocio y el frontend debe solicitar confirmación.
+```
 
-Las instrucciones completas se encuentran en [`ejercicio/README.md`](ejercicio/README.md).
+### 4. Implementar lo aprobado
 
-## Ideas clave
+Solamente después de aprobar el plan:
 
-- SDD es un concepto y un proceso, no un producto concreto.
-- Cada equipo puede construir un estándar apropiado para su contexto.
-- Una especificación estructurada reduce ambigüedad, repetición y reprocesamiento.
-- Más detalle relevante ayuda al agente; más texto sin estructura no necesariamente.
-- Historia, Gherkin, OpenAPI y Mermaid describen dimensiones diferentes del mismo cambio.
-- La especificación debe evolucionar con el código.
-- Los prompts activan el trabajo, pero el conocimiento estable debe permanecer en el repositorio.
-- La precisión reduce alucinaciones, pero la verificación humana y automática continúa siendo necesaria.
+```text
+$openspec-apply-change
+```
+
+Codex implementa las tareas y actualiza su estado. El desarrollador sigue revisando los cambios, los comandos y los resultados.
+
+### 5. Verificar
+
+La versión básica de OpenSpec puede validar la estructura de los artefactos:
+
+```powershell
+openspec validate --all --strict --no-interactive
+```
+
+Además, Codex debe compilar, ejecutar las pruebas y comparar el resultado con los requisitos. OpenSpec también dispone de un flujo opcional de verificación que los equipos pueden habilitar en sus perfiles.
+
+### 6. Archivar
+
+Cuando la implementación y las pruebas están aprobadas:
+
+```text
+$openspec-archive-change
+```
+
+El cambio se incorpora a las especificaciones vigentes y se conserva como historial.
+
+### Resumen de uso en ambas interfaces
+
+Los comandos se escriben en el chat de Codex, no en PowerShell:
+
+| Momento | Codex CLI | Aplicación visual |
+|---|---|---|
+| Explorar | Escribir `$openspec-explore ...` en el chat | Escribir o seleccionar `$openspec-explore` en el cuadro de texto |
+| Proponer | Escribir `$openspec-propose ...` | Utilizar `$openspec-propose` en la tarea abierta |
+| Corregir | Escribir `$openspec-update-change ...` | Continuar la misma tarea con `$openspec-update-change` |
+| Implementar | Escribir `$openspec-apply-change` | Confirmar el plan y enviar `$openspec-apply-change` |
+| Archivar | Escribir `$openspec-archive-change` | Enviar `$openspec-archive-change` después de verificar |
+
+Los comandos `openspec init`, `openspec list` y `openspec validate` sí se ejecutan en la terminal porque pertenecen a la CLI de OpenSpec.
+
+## 3.8 - Configurar el estándar del equipo — 5 min
+
+Las skills de OpenSpec contienen el flujo general. `openspec/config.yaml` permite añadir el contexto y las reglas estables del proyecto, por ejemplo:
+
+- escribir los artefactos en español;
+- respetar la arquitectura hexagonal;
+- utilizar casos de uso explícitos;
+- incluir criterios de aceptación;
+- crear o actualizar pruebas unitarias;
+- ejecutar build y tests antes de terminar.
+
+Esto evita repetir las mismas instrucciones en cada solicitud. Si el equipo necesita un proceso distinto, puede personalizar los esquemas de OpenSpec o construir sus propias skills. Primero reutilizamos un estándar probado; después lo adaptamos cuando exista una necesidad real.
+
+La inyección contextual ocurre porque Codex recibe las reglas estables de `openspec/config.yaml` y los artefactos del cambio activo. `openspec/specs/` conserva el comportamiento vigente; `openspec/changes/` contiene la evolución que todavía está en revisión. Así, la especificación funciona como fuente de verdad versionada y no como un documento aislado.
+
+En este flujo no necesitamos indexar la especificación en una base vectorial: OpenSpec la organiza en rutas y artefactos conocidos para que las skills puedan localizarla e incorporarla al contexto de Codex. Otros entornos podrían añadir indexación semántica cuando el volumen documental lo justifique.
+
+### Validación automatizada
+
+El proyecto incluye `scripts/validate-sdd.ps1`, que reúne en un único control:
+
+- validación estricta de los artefactos OpenSpec;
+- compilación del backend;
+- ejecución de pruebas unitarias;
+- comprobación de errores de formato en el diff.
+
+```powershell
+./scripts/validate-sdd.ps1
+```
+
+Este control detecta errores estructurales y técnicos. La revisión humana sigue siendo necesaria para comprobar que la implementación conserva la intención del requisito.
+
+## Taller práctico — 70 min
+
+El ejercicio parte del Delivery Board utilizado en la sesión anterior. Cada estudiante utilizará OpenSpec para transformar un requerimiento ambiguo en artefactos revisados y, únicamente después de aprobarlos, implementar y verificar el cambio.
+
+Consulta las [instrucciones del ejercicio](./ejercicio/README.md).
+
+## Cierre — 5 min
+
+- Una petición no es todavía una especificación.
+- OpenSpec automatiza el proceso, pero las decisiones siguen siendo humanas.
+- Propuesta, diseño y tareas se revisan antes de implementar.
+- Código, pruebas y especificaciones deben contar la misma historia.
+- El flujo puede reutilizarse y adaptarse a las reglas de cada equipo.
+
+## Recursos oficiales
+
+- [OpenSpec](https://openspec.dev/)
+- [Guía de instalación de OpenSpec](https://openspec.dev/docs/installation)
+- [Inicio rápido de OpenSpec](https://openspec.dev/docs/quickstart)
+- [GitHub Spec Kit](https://github.github.io/spec-kit/)

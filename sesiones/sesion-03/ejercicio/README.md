@@ -1,354 +1,291 @@
-# Ejercicio práctico - Evolucionar Delivery Board mediante SDD
+# Ejercicio práctico - Evolucionar Delivery Board con OpenSpec
 
 ## Objetivo
 
-Transformar un requerimiento ambiguo en una especificación versionada, convertirla en un plan ejecutable, implementar el cambio con Codex y verificar que código, pruebas y contrato representan el mismo comportamiento.
+Utilizar OpenSpec y Codex para convertir un requerimiento ambiguo en una propuesta completa, revisar las decisiones, implementar el cambio y verificar que el código coincide con la especificación.
 
-No se proporcionan prompts resueltos. Cada fase debe quedar documentada para mostrar cómo evolucionó la petición inicial.
+No debes redactar manualmente un plan completo ni pedir a Codex que implemente directamente. El objetivo es utilizar el flujo instalado por OpenSpec.
 
-## 1. Actualizar el fork y crear una rama
+## 1. Preparar la rama y la carpeta personal
 
-```bash
-git fetch upstream
+Actualiza `main` desde el repositorio central y crea una rama:
+
+```powershell
 git switch main
-git merge --ff-only upstream/main
+git fetch upstream
+git rebase upstream/main
 git push origin main
-git switch -c <github-login>/sesion-03-ejercicio-01
+git switch -c sesion-03-open-spec
 ```
 
-Sustituye `<github-login>` por tu usuario de GitHub. No trabajes directamente sobre `main`.
-
-## 2. Preparar el punto de partida
-
-Copia tu proyecto terminado de la sesión 2:
-
-```text
-estudiantes/<github-login>/sesion-02/ejercicio-01/proyecto/
-```
-
-dentro de la nueva entrega:
+Crea la entrega usando exactamente tu usuario de GitHub:
 
 ```text
 estudiantes/<github-login>/sesion-03/ejercicio-01/
 ```
 
-Si no dispones de una entrega funcional, utiliza `sesiones/sesion-02/material/proyecto-codex-dotnet/` como punto de partida.
+## 2. Copiar el proyecto
 
-La estructura final será:
+Utiliza la copia de Delivery Board preparada para esta sesión:
 
 ```text
-estudiantes/<github-login>/sesion-03/ejercicio-01/
-├── README.md
-├── prompts/
-│   ├── 01-descubrimiento.md
-│   ├── 02-requisitos.md
-│   ├── 03-diseno.md
-│   ├── 04-planificacion.md
-│   ├── 05-implementacion.md
-│   └── 06-verificacion.md
-└── proyecto/
-    ├── AGENTS.md
-    ├── specs/
-    │   └── delete-work-items-by-status/
-    │       ├── README.md
-    │       ├── requirements.md
-    │       ├── acceptance.feature
-    │       ├── openapi.yaml
-    │       ├── implementation-plan.md
-    │       └── traceability.md
-    ├── frontend/
-    └── backend/
+sesiones/sesion-03/material/proyecto-codex-dotnet/
 ```
 
-No modifiques archivos fuera de `estudiantes/<github-login>/`.
+dentro de:
 
-## 3. Verificar la base
+```text
+estudiantes/<github-login>/sesion-03/ejercicio-01/proyecto/
+```
 
-Antes de iniciar el proceso SDD:
+La entrega debe conservar `frontend/`, `backend/`, `.agents/` y `openspec/`.
 
-```bash
-cd estudiantes/<github-login>/sesion-03/ejercicio-01/proyecto/backend
+## 3. Comprobar el punto de partida
+
+Desde `proyecto/backend`:
+
+```powershell
 dotnet tool restore
 dotnet build DeliveryBoard.slnx
 dotnet test DeliveryBoard.slnx
 ```
 
-Documenta el resultado inicial. Si partes de tu ejercicio anterior, describe qué funcionalidad de eliminación ya existe.
+No continúes hasta que la base compile y sus pruebas pasen.
 
-## 4. Requerimiento original
+## 4. Preparar OpenSpec
 
-El único requerimiento inicial es:
+Comprueba las herramientas:
+
+```powershell
+node --version
+openspec --version
+```
+
+Si OpenSpec no está instalado:
+
+```powershell
+npm install -g @fission-ai/openspec@latest
+```
+
+Desde la raíz de `proyecto/`, actualiza o inicializa la integración con Codex:
+
+```powershell
+openspec init --tools codex --no-animation
+```
+
+Reinicia Codex después de la inicialización para que detecte las skills del proyecto.
+
+### Opción A: Codex CLI
+
+Desde la raíz de `proyecto/`:
+
+```powershell
+codex
+```
+
+Escribe las invocaciones `$openspec-*` dentro del chat que se abre, no en PowerShell.
+
+### Opción B: aplicación visual de Codex
+
+Abre la carpeta `proyecto/` como espacio de trabajo y crea una tarea nueva. En el cuadro de texto escribe `$` para localizar las skills instaladas o introduce directamente `$openspec-explore`.
+
+En ambas opciones, confirma que la carpeta activa es la que contiene `.agents/skills/` y `openspec/`. Utiliza la misma tarea durante la exploración, la propuesta, la revisión y la implementación para conservar el contexto.
+
+## 5. Requerimiento original
+
+Este es el único requerimiento inicial:
 
 > Queremos poder eliminar las tareas que estén en determinados estados.
 
-No presupongas el endpoint, los estados permitidos, la interfaz, los errores ni la implementación.
+No añadas una solución técnica antes de iniciar el flujo. Las decisiones deben aparecer durante la exploración y revisión.
 
-## 5. Fase de descubrimiento
+## 6. Explorar
 
-Pide a Codex que analice el requerimiento, `AGENTS.md` y el proyecto sin modificar código.
-
-El resultado debe identificar:
-
-- Preguntas abiertas.
-- Supuestos posibles.
-- Decisiones pendientes.
-- Restricciones existentes.
-- Riesgos.
-- Capas y flujos potencialmente afectados.
-
-Responde y documenta personalmente las decisiones. Guarda el prompt inicial y todos sus seguimientos en `prompts/01-descubrimiento.md`.
-
-## 6. Fase de requisitos
-
-Crea `specs/delete-work-items-by-status/requirements.md` con:
-
-- Requerimiento original sin corregir.
-- Contexto y problema.
-- Historia de usuario.
-- Objetivo.
-- Alcance.
-- Fuera de alcance.
-- Glosario.
-- Reglas de negocio.
-- Precondiciones y postcondiciones.
-- Errores esperados.
-- Requisitos no funcionales relevantes.
-- Decisiones tomadas y supuestos todavía abiertos.
-
-Crea `acceptance.feature` con escenarios Gherkin para:
-
-- Eliminación correcta.
-- Conservación de estados no solicitados.
-- Solicitud sin estados.
-- Estado inválido o no permitido.
-- Ausencia de coincidencias.
-- Actualización del frontend.
-
-Guarda los prompts en `prompts/02-requisitos.md`.
-
-## 7. Fase de diseño y contrato
-
-Antes de implementar, documenta la solución acordada.
-
-### `README.md` de la especificación
-
-Debe funcionar como índice y resumir estado, objetivo, decisiones y enlaces a los demás artefactos.
-
-### Mermaid
-
-Incluye al menos:
-
-- Flujo desde el usuario hasta PostgreSQL.
-- Capas que participan.
-- Respuesta correcta y error de negocio.
-
-### `openapi.yaml`
-
-Define:
-
-- Método y ruta.
-- Parámetros o cuerpo.
-- Estados admitidos.
-- Respuesta correcta con cantidad eliminada.
-- Errores mediante `ProblemDetails`.
-- Ejemplos.
-
-El contrato debe representar una decisión consciente, no copiar el endpoint de la sesión anterior sin revisarlo.
-
-Guarda los prompts y decisiones de esta fase en `prompts/03-diseno.md`.
-
-## 8. Fase de planificación
-
-Pide a Codex que convierta exclusivamente la especificación aprobada en un plan. Todavía no debe implementar.
-
-`implementation-plan.md` debe dividir el trabajo en tareas pequeñas e incluir para cada una:
-
-- Identificador.
-- Objetivo.
-- Requisito o criterio relacionado.
-- Capas o archivos afectados.
-- Dependencias.
-- Pruebas necesarias.
-- Criterio de terminado.
-
-El plan debe cubrir contrato, Domain, Application, Infrastructure, Api, frontend, pruebas y validación final.
-
-Guarda los prompts en `prompts/04-planificacion.md`.
-
-## 9. Fase de implementación
-
-Solicita a Codex que implemente las tareas aprobadas utilizando como fuente de verdad la carpeta:
+Invoca la skill desde Codex:
 
 ```text
-specs/delete-work-items-by-status/
+$openspec-explore Analiza el requerimiento de eliminar tareas que estén en determinados estados. Examina Delivery Board, identifica las ambigüedades y ayúdame a decidir el comportamiento. No implementes todavía.
 ```
 
-No delegues toda la funcionalidad sin controles intermedios:
+Responde las preguntas con tus propias decisiones. Como mínimo deben quedar claros:
 
-1. Ejecuta tareas en un orden justificable.
-2. Revisa el diff después de cada bloque relevante.
-3. Corrige cualquier interpretación que contradiga la especificación.
-4. Actualiza la especificación si una decisión aprobada cambia.
-5. Exige las pruebas definidas en el plan.
+- qué estados permiten eliminación;
+- si se elimina una tarea, varias o todas las coincidentes;
+- qué sucede cuando no hay coincidencias;
+- qué confirmación necesita el usuario;
+- qué elementos del frontend y backend cambiarán;
+- cómo se comprobará el comportamiento.
 
-Guarda el prompt inicial, los seguimientos y las correcciones en `prompts/05-implementacion.md`.
+## 7. Proponer
 
-## 10. Fase de verificación
+Cuando hayas entendido la necesidad, ejecuta:
 
-Ejecuta personalmente:
+```text
+$openspec-propose Queremos poder eliminar las tareas que estén en los estados acordados durante la exploración. Genera la propuesta completa, las especificaciones, el diseño y las tareas. No implementes todavía.
+```
 
-```bash
-cd estudiantes/<github-login>/sesion-03/ejercicio-01/proyecto/backend
+Comprueba que se ha creado un cambio dentro de:
+
+```text
+openspec/changes/<nombre-del-cambio>/
+```
+
+## 8. Revisar y corregir
+
+Lee todos los artefactos generados. No aceptes automáticamente el resultado.
+
+Verifica que incluyan:
+
+- objetivo, alcance y elementos fuera de alcance;
+- reglas de negocio y comportamiento cuando no hay coincidencias;
+- criterios de aceptación observables;
+- cambios previstos en frontend, API, aplicación, dominio e infraestructura;
+- contrato del endpoint;
+- tareas de implementación y pruebas;
+- estrategia de verificación.
+
+Si algo falta o es incorrecto, utiliza la skill de actualización. Escribe tú mismo las correcciones necesarias:
+
+```text
+$openspec-update-change <describe aquí las decisiones o correcciones>
+```
+
+Puedes repetir esta fase. **No ejecutes la implementación hasta aprobar personalmente la propuesta, el diseño y las tareas.**
+
+## 9. Validar los artefactos
+
+```powershell
+openspec validate --all --strict --no-interactive
+```
+
+Corrige los errores antes de continuar.
+
+Antes de aprobar la propuesta, comprueba también que el diseño indique claramente:
+
+- entidades, estados y datos afectados;
+- invariantes que no pueden romperse;
+- método, ruta, respuestas y errores del contrato HTTP;
+- flujo lógico desde el botón del frontend hasta la persistencia;
+- trazabilidad entre requisitos, tareas y pruebas.
+
+## 10. Implementar
+
+Cuando el plan esté aprobado:
+
+```text
+$openspec-apply-change
+```
+
+Revisa los cambios que realice Codex. La solución debe incluir, como mínimo:
+
+- comportamiento real de eliminación en el backend;
+- regla o error de negocio cuando corresponda;
+- endpoint de Minimal API;
+- persistencia mediante el repositorio;
+- botón y confirmación en el frontend;
+- actualización de los datos visibles;
+- pruebas unitarias de los casos principales y de error.
+
+No corrijas manualmente un problema sin comunicárselo al agente: utiliza la conversación para que el flujo y las decisiones queden registrados.
+
+## 11. Verificar
+
+Desde `proyecto/backend`:
+
+```powershell
 dotnet build DeliveryBoard.slnx
 dotnet test DeliveryBoard.slnx
 ```
 
-Si dispones de Docker, inicia Aspire:
+Desde la raíz de `proyecto/`:
 
-```bash
-dotnet run --project apphost/DeliveryBoard.AppHost
+```powershell
+./scripts/validate-sdd.ps1
 ```
 
-Comprueba los escenarios de `acceptance.feature` en `http://localhost:3000`.
+Ejecuta Aspire y comprueba desde el frontend:
 
-Completa `traceability.md`:
+1. El botón aparece en el lugar previsto.
+2. La aplicación solicita confirmación.
+3. Se eliminan únicamente las tareas permitidas.
+4. Las tareas de otros estados se conservan.
+5. El error de negocio se muestra de forma comprensible.
+6. El tablero se actualiza después de la operación.
 
-| Requisito | Criterio Gherkin | Tarea | Código | Prueba | Estado |
-|---|---|---|---|---|---|
-| Identificador | Escenario | Tarea | Archivo o símbolo | Test | Cumple/No cumple |
+Si el código no coincide con la especificación, pide a Codex que corrija la implementación o actualiza primero la especificación si la decisión cambió.
 
-Pide finalmente a Codex una revisión de conformidad entre especificación, código y pruebas. Guarda el prompt y el resultado revisado en `prompts/06-verificacion.md`.
+La validación automática no puede decidir por sí sola si el código representa correctamente la intención del negocio. Revisa cada criterio de aceptación y relaciona al menos una tarea y una comprobación con cada requisito.
 
-## 11. Cómo documentar cada prompt
+## 12. Archivar el cambio
 
-Todos los ficheros de `prompts/` deben conservar:
-
-````markdown
-# Fase
-
-## Objetivo
-
-Explica qué resultado se buscaba en esta fase.
-
-## Prompt inicial
+Cuando los artefactos, el código y las pruebas estén alineados:
 
 ```text
-Texto exacto enviado a Codex.
+$openspec-archive-change
 ```
 
-## Seguimientos
+Vuelve a ejecutar:
+
+```powershell
+openspec validate --all --strict --no-interactive
+openspec validate --archived --strict --no-interactive
+```
+
+El historial archivado y las especificaciones actualizadas forman parte de la entrega.
+
+## 13. Documentar la experiencia
+
+Crea `README.md` dentro de la carpeta del ejercicio e incluye brevemente:
+
+- el requerimiento original;
+- las ambigüedades detectadas;
+- las decisiones que tomaste;
+- los nombres de las skills utilizadas;
+- qué corregiste durante la revisión;
+- qué verificaciones ejecutaste y sus resultados;
+- una diferencia concreta entre pedir código directamente y utilizar OpenSpec.
+
+Crea también `PROMPTS.md` y conserva:
+
+- el texto inicial enviado a `explore` y `propose`;
+- los seguimientos con los que aclaraste o corregiste la propuesta;
+- cualquier indicación adicional necesaria durante `apply`;
+- no es necesario copiar las respuestas completas de Codex porque los artefactos de OpenSpec ya contienen el resultado estructurado.
+
+## Estructura esperada
 
 ```text
-Preguntas, correcciones o nuevas instrucciones.
+ejercicio-01/
+├── README.md
+├── PROMPTS.md
+└── proyecto/
+    ├── .agents/skills/
+    ├── openspec/
+    │   ├── config.yaml
+    │   ├── specs/
+    │   └── changes/archive/
+    ├── frontend/
+    └── backend/
 ```
 
-## Decisiones
+## 14. Commit, push y pull request
 
-- Decisión aceptada:
-- Supuesto rechazado:
-- Cambio realizado por el estudiante:
-
-## Resultado revisado
-
-Resume qué produjo Codex y qué comprobaste personalmente.
-````
-
-## 12. Documentar la experiencia
-
-Completa el `README.md` de la entrega:
-
-```markdown
-# Entrega de la sesión 3
-
-## Punto de partida
-
-- Usuario de GitHub:
-- Proyecto utilizado:
-- Estado inicial de build y tests:
-
-## Evolución del requerimiento
-
-- Ambigüedades detectadas:
-- Decisiones principales:
-- Diferencias entre el requerimiento original y la especificación final:
-
-## Flujo SDD
-
-- Descubrimiento:
-- Requisitos:
-- Diseño:
-- Planificación:
-- Implementación:
-- Verificación:
-
-## Uso de Codex
-
-- Interfaz utilizada:
-- Supuesto incorrecto detectado:
-- Prompt de seguimiento más importante:
-- Decisión tomada personalmente:
-
-## Trazabilidad
-
-- Criterios cubiertos:
-- Criterios pendientes, si existen:
-- Cambios realizados para evitar deriva:
-
-## Validación
-
-- Resultado de build:
-- Resultado de tests:
-- Número total de pruebas:
-- Resultado de la comprobación manual:
-
-## Conclusión
-
-1. ¿Cómo cambió la implementación al concretar la especificación?
-2. ¿Qué reprocesamiento evitó el proceso SDD?
-3. ¿Qué información debe permanecer en la especificación y no solo en un prompt?
-```
-
-## 13. Commit, push y pull request
-
-```bash
-git status
+```powershell
 git add estudiantes/<github-login>/sesion-03/ejercicio-01
-git commit -m "feat(session-03): complete SDD exercise"
-git push -u origin <github-login>/sesion-03-ejercicio-01
+git commit -m "feat(sesion-03): completar ejercicio con OpenSpec"
+git push -u origin sesion-03-open-spec
 ```
 
-Abre una pull request hacia `jcarrenogallego/formacion-ai:main` y completa la plantilla.
+Abre una pull request hacia `jcarrenogallego/formacion-ai:main`. No incluyas cambios fuera de tu carpeta personal.
 
 ## Criterios de evaluación
 
-### Especificación
-
-- El requerimiento ambiguo se conserva y se refina sin ocultar su origen.
-- Preguntas, supuestos y decisiones están documentados.
-- Alcance y fuera de alcance son explícitos.
-- La historia de usuario expresa necesidad y valor.
-- Gherkin cubre caminos correctos y alternativos.
-- Reglas, invariantes y errores son verificables.
-- OpenAPI coincide con el comportamiento implementado.
-- Mermaid representa el flujo real.
-
-### Planificación e implementación
-
-- El plan divide el trabajo en tareas trazables.
-- Cada tarea tiene criterio de terminado y pruebas.
-- El código mantiene las dependencias de la arquitectura.
-- Frontend y backend funcionan juntos.
-- No se añaden patrones o dependencias ajenos a la especificación.
-
-### Verificación
-
-- La solución compila y las pruebas pasan.
-- La matriz relaciona requisitos, escenarios, tareas, código y pruebas.
-- Las diferencias encontradas se corrigen o quedan explícitamente justificadas.
-
-### Uso de Codex
-
-- Todos los prompts y seguimientos están versionados.
-- Las fases de descubrimiento, especificación, planificación, implementación y verificación están separadas.
-- Existe evidencia de revisión y decisiones humanas.
-- El estudiante puede explicar cómo la especificación redujo ambigüedad y reprocesamiento.
+- El flujo de OpenSpec fue utilizado y sus artefactos están versionados.
+- Las ambigüedades se resolvieron mediante decisiones explícitas.
+- La propuesta, el diseño y las tareas fueron revisados antes de implementar.
+- La implementación respeta los artefactos aprobados.
+- Las pruebas cubren casos correctos y errores de negocio.
+- Build, tests y validación de OpenSpec finalizan correctamente.
+- El contrato HTTP, los límites, el modelo afectado, los invariantes y el flujo lógico están definidos.
+- Existe trazabilidad comprensible entre requisitos, tareas, código y pruebas.
+- `README.md` y `PROMPTS.md` explican el proceso con palabras propias.
