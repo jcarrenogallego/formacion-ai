@@ -68,6 +68,16 @@ $openspec-archive-change
 
 `propose` crea la especificación, el diseño y las tareas. Revisa esos documentos antes de ejecutar `apply`. Las instrucciones completas están en la [guía de la sesión 3](../../README.md).
 
+## Validar el cambio SDD
+
+Desde la raíz del proyecto:
+
+```powershell
+./scripts/validate-sdd.ps1
+```
+
+El script valida OpenSpec, compila el backend, ejecuta sus pruebas y comprueba el formato del diff. Debe pasar antes de archivar el cambio.
+
 ## Ejecutar todo con Aspire
 
 Desde la raíz de este proyecto:

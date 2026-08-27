@@ -14,9 +14,12 @@ rules:
     - Señala cualquier decisión de negocio que todavía necesite confirmación humana.
   specs:
     - Incluye criterios de aceptación observables para los casos correctos y de error.
+    - Expresa los escenarios principales con Given, When y Then.
     - No inventes una regla de negocio cuando el requerimiento sea ambiguo.
   design:
     - Identifica los cambios necesarios en frontend y en cada capa del backend.
+    - Cuando cambie la API, documenta método, ruta, entrada, respuestas y errores con un contrato OpenAPI.
+    - Describe el modelo afectado, sus invariantes y el flujo lógico de la operación.
     - Conserva la arquitectura existente y evita dependencias nuevas innecesarias.
   tasks:
     - Incluye la creación o actualización de pruebas unitarias.

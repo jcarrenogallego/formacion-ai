@@ -2,7 +2,7 @@
 
 > **Duración aproximada: 3 horas, incluido un descanso de 10 minutos.**
 
-## 3.0 - De una petición a una especificación — 10 min
+## 3.0 - De una petición a una especificación — 5 min
 
 En la sesión anterior utilizamos Codex para trabajar sobre un proyecto existente. Ahora daremos un paso más: antes de modificar el código, convertiremos una necesidad en una especificación revisable.
 
@@ -21,7 +21,7 @@ flowchart LR
     E --> F[Verificación]
 ```
 
-## 3.1 - El coste de la ambigüedad — 10 min
+## 3.1 - El coste de la ambigüedad — 5 min
 
 Cuando faltan decisiones, el agente tiene que suponer. Puede producir código válido que no resuelva la necesidad real.
 
@@ -46,7 +46,9 @@ La especificación actúa como un contrato compartido entre personas y agentes. 
 - reduce el riesgo de que el agente invente detalles;
 - no sustituye la revisión humana ni garantiza que el resultado sea correcto.
 
-## 3.3 - Qué debe describir una especificación — 20 min
+En esta sesión, **implementación zero-shot** no significa entregar una frase vaga y confiar en un único intento. Significa que, después de revisar una especificación suficientemente clara, el agente puede abordar la implementación sin improvisar requisitos durante el desarrollo.
+
+## 3.3 - Qué debe describir una especificación — 15 min
 
 No necesitamos un documento enorme. Necesitamos decisiones claras.
 
@@ -60,6 +62,20 @@ No necesitamos un documento enorme. Necesitamos decisiones claras.
 | Criterios de aceptación | ¿Cómo sabremos que funciona? |
 | Tareas | ¿En qué orden se implementará? |
 | Verificación | ¿Qué pruebas y controles deben pasar? |
+
+### Límites, modelo e invariantes
+
+- **Límite:** indica qué puede modificar el agente y qué queda fuera del cambio.
+- **Modelo de datos:** define entidades, estados y datos relevantes sin describir cada detalle del código.
+- **Invariante:** regla que siempre debe cumplirse, como «una tarea completada no puede volver a pendiente».
+- **Flujo lógico:** orden visible de decisiones desde la entrada hasta el resultado o el error.
+
+```mermaid
+flowchart LR
+    A[Solicitud] --> B{¿Cumple las reglas?}
+    B -->|Sí| C[Aplicar cambio]
+    B -->|No| D[Devolver error de negocio]
+```
 
 ### Historia de usuario y Gherkin
 
@@ -83,13 +99,14 @@ Scenario: Eliminar tareas pendientes
 
 Estos criterios no son necesariamente pruebas automatizadas, pero pueden guiar su creación.
 
-## 3.4 - Artefactos abiertos y versionables — 10 min
+## 3.4 - Artefactos abiertos y versionables — 5 min
 
 SDD funciona mejor cuando sus artefactos son texto que puede revisarse mediante Git:
 
 - **Markdown:** requisitos, decisiones, diseño y tareas.
 - **Mermaid:** flujos y relaciones visuales.
 - **OpenAPI:** contrato HTTP de una API.
+- **AsyncAPI:** contrato para eventos y mensajes asíncronos; lo reconoceremos, aunque Delivery Board utiliza HTTP.
 - **Gherkin:** ejemplos de comportamiento comprensibles.
 - **Código y pruebas:** evidencia de la implementación.
 
@@ -194,7 +211,7 @@ La CLI y la aplicación visual utilizan las mismas skills del proyecto. Lo impor
 
 ## Descanso — 10 min
 
-## 3.7 - El flujo automatizado con OpenSpec y Codex — 35 min
+## 3.7 - El flujo automatizado con OpenSpec y Codex — 30 min
 
 OpenSpec no es otro modelo. Es un conjunto de instrucciones, plantillas y herramientas que guía al agente por un proceso repetible.
 
@@ -284,7 +301,7 @@ Los comandos se escriben en el chat de Codex, no en PowerShell:
 
 Los comandos `openspec init`, `openspec list` y `openspec validate` sí se ejecutan en la terminal porque pertenecen a la CLI de OpenSpec.
 
-## 3.8 - Configurar el estándar del equipo — 10 min
+## 3.8 - Configurar el estándar del equipo — 5 min
 
 Las skills de OpenSpec contienen el flujo general. `openspec/config.yaml` permite añadir el contexto y las reglas estables del proyecto, por ejemplo:
 
@@ -297,7 +314,26 @@ Las skills de OpenSpec contienen el flujo general. `openspec/config.yaml` permit
 
 Esto evita repetir las mismas instrucciones en cada solicitud. Si el equipo necesita un proceso distinto, puede personalizar los esquemas de OpenSpec o construir sus propias skills. Primero reutilizamos un estándar probado; después lo adaptamos cuando exista una necesidad real.
 
-## Taller práctico — 40 min
+La inyección contextual ocurre porque Codex recibe las reglas estables de `openspec/config.yaml` y los artefactos del cambio activo. `openspec/specs/` conserva el comportamiento vigente; `openspec/changes/` contiene la evolución que todavía está en revisión. Así, la especificación funciona como fuente de verdad versionada y no como un documento aislado.
+
+En este flujo no necesitamos indexar la especificación en una base vectorial: OpenSpec la organiza en rutas y artefactos conocidos para que las skills puedan localizarla e incorporarla al contexto de Codex. Otros entornos podrían añadir indexación semántica cuando el volumen documental lo justifique.
+
+### Validación automatizada
+
+El proyecto incluye `scripts/validate-sdd.ps1`, que reúne en un único control:
+
+- validación estricta de los artefactos OpenSpec;
+- compilación del backend;
+- ejecución de pruebas unitarias;
+- comprobación de errores de formato en el diff.
+
+```powershell
+./scripts/validate-sdd.ps1
+```
+
+Este control detecta errores estructurales y técnicos. La revisión humana sigue siendo necesaria para comprobar que la implementación conserva la intención del requisito.
+
+## Taller práctico — 70 min
 
 El ejercicio parte del Delivery Board utilizado en la sesión anterior. Cada estudiante utilizará OpenSpec para transformar un requerimiento ambiguo en artefactos revisados y, únicamente después de aprobarlos, implementar y verificar el cambio.
 

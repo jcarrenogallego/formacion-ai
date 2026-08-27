@@ -160,6 +160,14 @@ openspec validate --all --strict --no-interactive
 
 Corrige los errores antes de continuar.
 
+Antes de aprobar la propuesta, comprueba también que el diseño indique claramente:
+
+- entidades, estados y datos afectados;
+- invariantes que no pueden romperse;
+- método, ruta, respuestas y errores del contrato HTTP;
+- flujo lógico desde el botón del frontend hasta la persistencia;
+- trazabilidad entre requisitos, tareas y pruebas.
+
 ## 10. Implementar
 
 Cuando el plan esté aprobado:
@@ -192,8 +200,7 @@ dotnet test DeliveryBoard.slnx
 Desde la raíz de `proyecto/`:
 
 ```powershell
-openspec validate --all --strict --no-interactive
-git diff --check
+./scripts/validate-sdd.ps1
 ```
 
 Ejecuta Aspire y comprueba desde el frontend:
@@ -207,6 +214,8 @@ Ejecuta Aspire y comprueba desde el frontend:
 
 Si el código no coincide con la especificación, pide a Codex que corrija la implementación o actualiza primero la especificación si la decisión cambió.
 
+La validación automática no puede decidir por sí sola si el código representa correctamente la intención del negocio. Revisa cada criterio de aceptación y relaciona al menos una tarea y una comprobación con cada requisito.
+
 ## 12. Archivar el cambio
 
 Cuando los artefactos, el código y las pruebas estén alineados:
@@ -219,6 +228,7 @@ Vuelve a ejecutar:
 
 ```powershell
 openspec validate --all --strict --no-interactive
+openspec validate --archived --strict --no-interactive
 ```
 
 El historial archivado y las especificaciones actualizadas forman parte de la entrega.
@@ -276,4 +286,6 @@ Abre una pull request hacia `jcarrenogallego/formacion-ai:main`. No incluyas cam
 - La implementación respeta los artefactos aprobados.
 - Las pruebas cubren casos correctos y errores de negocio.
 - Build, tests y validación de OpenSpec finalizan correctamente.
+- El contrato HTTP, los límites, el modelo afectado, los invariantes y el flujo lógico están definidos.
+- Existe trazabilidad comprensible entre requisitos, tareas, código y pruebas.
 - `README.md` y `PROMPTS.md` explican el proceso con palabras propias.
