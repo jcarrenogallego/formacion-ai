@@ -1,8 +1,10 @@
 # Sesión 3 - Desarrollo guiado por especificaciones con OpenSpec
 
-> **Duración aproximada: 3 horas, incluido un descanso de 10 minutos.**
+> Duración total: **3 horas** — 170 minutos de contenido y práctica, más 10 minutos de descanso.
 
-## 3.0 - De una petición a una especificación — 5 min
+## 3.0 - De una petición a una especificación
+
+> Tiempo estimado: **5 minutos**
 
 En la sesión anterior utilizamos Codex para trabajar sobre un proyecto existente. Ahora daremos un paso más: antes de modificar el código, convertiremos una necesidad en una especificación revisable.
 
@@ -21,7 +23,9 @@ flowchart LR
     E --> F[Verificación]
 ```
 
-## 3.1 - El coste de la ambigüedad — 5 min
+## 3.1 - El coste de la ambigüedad
+
+> Tiempo estimado: **5 minutos**
 
 Cuando faltan decisiones, el agente tiene que suponer. Puede producir código válido que no resuelva la necesidad real.
 
@@ -34,7 +38,9 @@ Cuando faltan decisiones, el agente tiene que suponer. Puede producir código v�
 
 Una especificación no elimina la incertidumbre: la hace visible antes de empezar a programar.
 
-## 3.2 - Qué es SDD — 10 min
+## 3.2 - Qué es SDD
+
+> Tiempo estimado: **10 minutos**
 
 **Specification-Driven Development (SDD)** es una forma de trabajar en la que una especificación versionada guía el diseño, las tareas, la implementación y la verificación.
 
@@ -48,7 +54,9 @@ La especificación actúa como un contrato compartido entre personas y agentes. 
 
 En esta sesión, **implementación zero-shot** no significa entregar una frase vaga y confiar en un único intento. Significa que, después de revisar una especificación suficientemente clara, el agente puede abordar la implementación sin improvisar requisitos durante el desarrollo.
 
-## 3.3 - Qué debe describir una especificación — 15 min
+## 3.3 - Qué debe describir una especificación
+
+> Tiempo estimado: **15 minutos**
 
 No necesitamos un documento enorme. Necesitamos decisiones claras.
 
@@ -99,7 +107,9 @@ Scenario: Eliminar tareas pendientes
 
 Estos criterios no son necesariamente pruebas automatizadas, pero pueden guiar su creación.
 
-## 3.4 - Artefactos abiertos y versionables — 5 min
+## 3.4 - Artefactos abiertos y versionables
+
+> Tiempo estimado: **5 minutos**
 
 SDD funciona mejor cuando sus artefactos son texto que puede revisarse mediante Git:
 
@@ -122,7 +132,9 @@ flowchart TD
 
 Cuando el código, las pruebas y la especificación dejan de representar el mismo comportamiento aparece **deriva**. Por eso deben evolucionar juntos.
 
-## 3.5 - Frameworks SDD: OpenSpec y Spec Kit — 5 min
+## 3.5 - Frameworks SDD: OpenSpec y Spec Kit
+
+> Tiempo estimado: **5 minutos**
 
 El concepto SDD no pertenece a una herramienta concreta. Un equipo puede crear su propio flujo, pero no necesita empezar desde cero.
 
@@ -140,7 +152,9 @@ Lo utilizaremos porque encaja bien en un proyecto existente y permite generar la
 
 Spec Kit es otra alternativa conocida. Ofrece fases como constitución del proyecto, especificación, aclaración, planificación, tareas, análisis e implementación. Es útil conocerlo, aunque en esta guía trabajaremos solamente con OpenSpec para mantener un único flujo.
 
-## 3.6 - Instalar y preparar OpenSpec para Codex — 15 min
+## 3.6 - Instalar y preparar OpenSpec para Codex
+
+> Tiempo estimado: **15 minutos**
 
 ### Requisito
 
@@ -209,9 +223,13 @@ $openspec-explore Analiza el requerimiento y ayúdame a identificar sus ambigüe
 
 La CLI y la aplicación visual utilizan las mismas skills del proyecto. Lo importante en ambos casos es abrir Codex con `proyecto-codex-dotnet` como carpeta de trabajo, no con una carpeta superior que deje `.agents/skills/` fuera de la raíz activa.
 
-## Descanso — 10 min
+## Descanso
 
-## 3.7 - El flujo automatizado con OpenSpec y Codex — 30 min
+> Tiempo estimado: **10 minutos**
+
+## 3.7 - El flujo automatizado con OpenSpec y Codex
+
+> Tiempo estimado: **30 minutos**
 
 OpenSpec no es otro modelo. Es un conjunto de instrucciones, plantillas y herramientas que guía al agente por un proceso repetible.
 
@@ -301,7 +319,9 @@ Los comandos se escriben en el chat de Codex, no en PowerShell:
 
 Los comandos `openspec init`, `openspec list` y `openspec validate` sí se ejecutan en la terminal porque pertenecen a la CLI de OpenSpec.
 
-## 3.8 - Configurar el estándar del equipo — 5 min
+## 3.8 - Configurar el estándar del equipo
+
+> Tiempo estimado: **5 minutos**
 
 Las skills de OpenSpec contienen el flujo general. `openspec/config.yaml` permite añadir el contexto y las reglas estables del proyecto, por ejemplo:
 
@@ -333,13 +353,17 @@ El proyecto incluye `scripts/validate-sdd.ps1`, que reúne en un único control:
 
 Este control detecta errores estructurales y técnicos. La revisión humana sigue siendo necesaria para comprobar que la implementación conserva la intención del requisito.
 
-## Taller práctico — 70 min
+## Taller práctico
+
+> Tiempo estimado: **70 minutos**
 
 El ejercicio parte del Delivery Board utilizado en la sesión anterior. Cada estudiante utilizará OpenSpec para transformar un requerimiento ambiguo en artefactos revisados y, únicamente después de aprobarlos, implementar y verificar el cambio.
 
 Consulta las [instrucciones del ejercicio](./ejercicio/README.md).
 
-## Cierre — 5 min
+## Cierre
+
+> Tiempo estimado: **5 minutos**
 
 - Una petición no es todavía una especificación.
 - OpenSpec automatiza el proceso, pero las decisiones siguen siendo humanas.
