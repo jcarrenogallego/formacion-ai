@@ -1,0 +1,35 @@
+schema: spec-driven
+
+context: |
+  Escribe todos los artefactos en español.
+  Delivery Board tiene un frontend con HTML, CSS y JavaScript sin frameworks.
+  El backend usa .NET 10, C# 14, Minimal APIs, arquitectura hexagonal,
+  casos de uso explícitos, Entity Framework Core, PostgreSQL y .NET Aspire.
+  Las pruebas de Application usan xUnit y repositorios fake locales; Moq no está instalado.
+  Respeta las dependencias entre Domain, Application, Infrastructure y Api.
+
+rules:
+  proposal:
+    - Diferencia el objetivo, el alcance y los elementos fuera de alcance.
+    - Señala cualquier decisión de negocio que todavía necesite confirmación humana.
+  specs:
+    - Incluye criterios de aceptación observables para los casos correctos y de error.
+    - Expresa los escenarios principales con Given, When y Then.
+    - No inventes una regla de negocio cuando el requerimiento sea ambiguo.
+  design:
+    - Identifica los cambios necesarios en frontend y en cada capa del backend.
+    - Cuando cambie la API, documenta método, ruta, entrada, respuestas y errores con un contrato OpenAPI.
+    - Describe el modelo afectado, sus invariantes y el flujo lógico de la operación.
+    - Conserva la arquitectura existente y evita dependencias nuevas innecesarias.
+  tasks:
+    - Incluye la creación o actualización de pruebas unitarias.
+    - Finaliza con build, tests y una comprobación funcional desde el frontend.
+
+operations:
+  apply:
+    guidance:
+      - No cambies el alcance aprobado sin actualizar primero los artefactos.
+      - Ejecuta las pruebas relacionadas y registra claramente cualquier fallo pendiente.
+  archive:
+    guidance:
+      - Confirma que los artefactos, el código y las pruebas describen el mismo comportamiento.

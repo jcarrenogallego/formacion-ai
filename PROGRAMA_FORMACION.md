@@ -152,30 +152,32 @@ Mapear el árbol de dependencias de un módulo existente con Engram, simular un 
 
 **Enfoque:** automatizar el ciclo de software con marcos multiagente, conectar APIs de forma resiliente y construir sistemas corporativos de recuperación de conocimiento.
 
-### Sesión 5 - Automatización del ciclo de software con BMAD Core
+### Sesión 5 - Automatización del ciclo de software con BMad Method
 
 **Duración:** 3 horas.
 
 #### Objetivo
 
-Configurar un ecosistema local de agentes especializados y orquestar un ciclo de desarrollo desde la idea hasta un artefacto validado.
+Configurar BMad Method sobre el framework y la CLI de BMAD Core, y coordinar un ciclo de desarrollo desde la idea hasta un artefacto validado mediante responsabilidades, workflows y gates humanos.
 
 #### Contenidos
 
-- **Filosofía BMAD:** desarrollo ágil guiado por agentes y ventajas de distribuir responsabilidades frente a un único prompt.
-- **Roles especializados:** Arquitecto, Desarrollador, QA y Analista de Producto.
-- **Configuración e infraestructura:** entorno de ejecución, variables de entorno, claves de API y herramientas de terminal.
-- **Descomposición de tareas:** conversión de requisitos funcionales en microtareas atómicas, secuenciales y procesables por agentes.
+- **BMad Method y BMAD Core:** el método ágil y su módulo BMM se ejecutan sobre el framework y la CLI subyacentes.
+- **Responsabilidades y workflows:** análisis de producto, arquitectura, desarrollo, checkpoints y revisión de código con autoridad y handoffs explícitos. BMM base no incorpora un agente QA separado; QA se trata como responsabilidad de verificación.
+- **Configuración reproducible:** instalación fijada para Codex, requisitos del entorno y protección de secretos y estado local.
+- **Cambios pequeños:** uso de `$bmad-build` como happy path, incorporando `$bmad-spec` y `$bmad-architecture` únicamente cuando aportan claridad o decisiones reales.
+- **Corrección acotada del workflow:** inspección de auto-fix para `patch`, loopback limitado de `bad_spec` y devolución de `intent_gap` a la persona responsable.
+- **Descomposición de tareas:** conversión de requisitos funcionales en unidades de trabajo atómicas, secuenciales, verificables y reversibles.
 
 #### Resultados de aprendizaje
 
-- Inicializar e integrar BMAD en un flujo de ingeniería.
-- Coordinar responsabilidades entre agentes especializados.
-- Completar un primer ciclo desde una idea de producto hasta clases validadas.
+- Inicializar e integrar BMad Method con el módulo BMM en un flujo de ingeniería.
+- Coordinar responsabilidades mediante artefactos, handoffs y gates humanos sin confundir roles con aislamiento, paralelismo o autonomía.
+- Completar un primer ciclo desde una idea de producto hasta un cambio validado mediante checkpoint, revisión, build y pruebas.
 
 #### Taller práctico
 
-Inicializar BMAD para resolver un ticket técnico real y analizar en los registros cómo colaboran analista, arquitecto y desarrollador hasta producir el artefacto final.
+Instalar BMad Method para Codex y resolver un ticket técnico real de Delivery Board. Hacer explícitos análisis, arquitectura y unidades de trabajo cuando aporten una decisión, construir el cambio con `$bmad-build` y revisar en los artefactos y registros cómo se conservó la intención, incluidos sus auto-fix y loopbacks acotados, hasta la validación final.
 
 ### Sesión 6 - BMAD avanzado y mecanismos de autocorrección
 
@@ -189,7 +191,7 @@ Construir flujos multiagente capaces de revisar sus resultados, detectar errores
 
 - **Personalización avanzada:** adaptación de plantillas para imponer arquitecturas empresariales y convenciones del equipo.
 - **Pipelines multiagente:** topologías en las que varios agentes diseñan, discuten y refinan una solución común.
-- **Reflexión y autocorrección:** bucles cerrados, incluido *Dual-Reflection*, en los que QA ejecuta pruebas, captura errores y devuelve el *stack trace* al agente desarrollador.
+- **Reflexión y autocorrección personalizada:** diseño de pipelines *unattended*, inyección de fallos y bucles cerrados propios, incluido *Dual-Reflection*, en los que la responsabilidad de QA ejecuta pruebas, captura errores y devuelve el *stack trace* al agente desarrollador.
 - **Gobernanza:** validación de los resultados contra criterios de aceptación derivados del SDD.
 
 #### Resultados de aprendizaje

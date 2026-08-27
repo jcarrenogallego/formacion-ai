@@ -10,6 +10,7 @@ Aquí se publican progresivamente la documentación, los conceptos y los ejercic
 - [Sesión 2 - Codex como agente de desarrollo](sesiones/sesion-02/)
 - [Sesión 3 - SDD, especificaciones abiertas y ejecución agéntica](sesiones/sesion-03/)
 - [Sesión 4 - Contexto persistente y control de entropía](sesiones/sesion-04/)
+- [Sesión 5 - Automatización del ciclo de software con BMad Method](sesiones/sesion-05/)
 
 ## Modelo de trabajo
 
