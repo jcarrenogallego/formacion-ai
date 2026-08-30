@@ -33,3 +33,8 @@ pnpm-debug.log*
 Thumbs.db
 *.tmp
 *.log
+
+# 
+**/from-chat-to-cognitive-system-main/
+.atl/
+.codegraph/
